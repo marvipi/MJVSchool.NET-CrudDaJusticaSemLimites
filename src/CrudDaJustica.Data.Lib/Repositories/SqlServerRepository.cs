@@ -18,36 +18,34 @@ public class SqlServerRepository : IHeroRepository
 
     private const string COUNT_HERO =
         @"SELECT COUNT(*) as HeroRepositorySize
-          FROM Hero;";
+          FROM HeroInformation;";
 
     private const string INSERT_HERO =
-        @"INSERT INTO Hero 
-                 (Id, Alias, Debut, FirstName, LastName)
-          VALUES (@id, @alias, @debut, @firstName, @lastName);";
+        @"EXECUTE InsertHero @Alias = @alias, 
+                             @Debut = @debut, 
+                             @FirstName = @firstName, 
+                             @LastName = @lastName;";
 
     private const string GET_HEROES_PAGED =
         @"SELECT Id, Alias, Debut, FirstName, LastName
-          FROM Hero
+          FROM HeroInformation
           ORDER BY Alias
           OFFSET (@page - 1) * @rows ROWS
           FETCH NEXT @rows ROWS ONLY;";
 
     private const string GET_HERO =
         @"SELECT Id, Alias, Debut, FirstName, LastName
-          FROM Hero
+          FROM HeroInformation
           WHERE Id = @id;";
 
     private const string UPDATE_HERO =
-        @"UPDATE Hero
-          SET Alias = @alias,
-              Debut = @debut,
-              FirstName = @firstName,
-              LastName = @lastName
-          WHERE Id = @id;";
+        @"EXECUTE UpdateHero @Id = @id,
+                             @Alias = @alias,
+                             @Debut = @debut,
+                             @FirstName = @firstName,
+                             @LastName = @lastName;";
 
-    private const string DELETE_HERO =
-        @"DELETE FROM Hero
-          WHERE Id = @id;";
+    private const string DELETE_HERO = @"EXECUTE DeleteHero @Id = @id;";
 
     public int RepositorySize
     {
@@ -152,11 +150,11 @@ public class SqlServerRepository : IHeroRepository
         var updateHeroCommand = new SqlCommand(UPDATE_HERO, sqlConnection);
         updateHeroCommand.Parameters.AddRange(new SqlParameter[]
         {
+            new("id", id),
             new("alias", updatedHero.Alias),
             new("debut", updatedHero.Debut),
             new("firstName", updatedHero.FirstName),
             new("lastName", updatedHero.LastName),
-            new("id", id),
         });
 
         updateHeroCommand.Connection.Open();
