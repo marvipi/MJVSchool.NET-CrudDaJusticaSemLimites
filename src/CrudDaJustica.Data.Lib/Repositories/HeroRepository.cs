@@ -16,7 +16,7 @@ public abstract class HeroRepository
     public int CurrentPage => pagingService.CurrentPage;
 
     /// <summary>
-    /// The amount of data retrieved per <see cref="GetHeroes(int, int)"/>.
+    /// The amount of data retrieved per <see cref="Get(int, int)"/>.
     /// </summary>
     public int RowsPerPage => pagingService.RowsPerPage;
 
@@ -34,7 +34,7 @@ public abstract class HeroRepository
     /// Registers a new hero in this repository.
     /// </summary>
     /// <param name="newHero"> The hero to register. </param>
-    public abstract bool RegisterHero(HeroEntity newHero);
+    public abstract bool Register(HeroEntity newHero);
 
     /// <summary>
     /// Retrieves information about all heroes registered in a given page.
@@ -42,25 +42,25 @@ public abstract class HeroRepository
     /// <param name="page"> The page where information will be retrieved. </param>
     /// <param name="rows"> The amount of data to get. </param>
     /// <returns> A collection of all heroes registered in the page. </returns>
-    public abstract IEnumerable<HeroEntity> GetHeroes(int page, int rows);
+    public abstract IEnumerable<HeroEntity> Get(int page, int rows);
 
     /// <summary>
     /// Retrieves information about a hero.
     /// </summary>
     /// <param name="id"> The id of the hero to get. </param>
     /// <returns> Information about a hero whose id matches the given one, or null, if no matching ids are found. </returns>
-    public abstract HeroEntity? GetHero(Guid id);
+    public abstract HeroEntity? Get(Guid id);
 
     /// <summary>
     /// Updates the information about a registered hero.
     /// </summary>
     /// <param name="id"> The id of the hero to update. </param>
     /// <param name="updatedHero"> A <see cref="HeroEntity"/> containing update to date information about the hero. </param>
-    public abstract bool UpdateHero(Guid id, HeroEntity updatedHero);
+    public abstract bool Update(Guid id, HeroEntity updatedHero);
 
     /// <summary>
     /// Deletes a hero from the repository.
     /// </summary>
     /// <param name="id"> The id of the hero to delete. </param>
-    public abstract bool DeleteHero(Guid id);
+    public abstract bool Delete(Guid id);
 }

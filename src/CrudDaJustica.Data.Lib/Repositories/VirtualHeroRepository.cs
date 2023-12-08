@@ -9,26 +9,26 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// <remarks>
 /// All data will be lost when the system is shutdown.
 /// </remarks>
-public class VirtualRepository : HeroRepository
+public class VirtualHeroRepository : HeroRepository
 {
-    private int RepositorySize => LastFilledIndex(heroes) + 1;
+    private int Size => LastFilledIndex(heroes) + 1;
 
     // Summary: All heroes registered in this repository.
     private HeroEntity[] heroes;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VirtualRepository"/> class.
+    /// Initializes a new instance of the <see cref="VirtualHeroRepository"/> class.
     /// </summary>
     /// <param name="pagingService"> The service responsible for paging data repositories. </param>
     /// <param name="initialSize"> The amount space to reserve for registering new heroes. </param>
-    public VirtualRepository(PagingService pagingService, uint initialSize) : base(pagingService)
+    public VirtualHeroRepository(PagingService pagingService, uint initialSize) : base(pagingService)
     {
         heroes = new HeroEntity[initialSize];
     }
 
-    public override bool RegisterHero(HeroEntity newHero)
+    public override bool Register(HeroEntity newHero)
     {
-        if (RepositorySize == heroes.Length)
+        if (Size == heroes.Length)
         {
             Array.Resize(ref heroes, heroes.Length * 2);
         }
@@ -37,9 +37,9 @@ public class VirtualRepository : HeroRepository
         return true;
     }
 
-    public override IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    public override IEnumerable<HeroEntity> Get(int page, int rows)
     {
-        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+        (var validPage, var validRows) = pagingService.Validate(page, rows, Size);
 
         var skip = (validPage - 1) * validRows;
         var take = validPage * validRows;
@@ -50,7 +50,7 @@ public class VirtualRepository : HeroRepository
         return nonNullHeroes;
     }
 
-    public override HeroEntity? GetHero(Guid id)
+    public override HeroEntity? Get(Guid id)
     {
         foreach (var hero in heroes)
         {
@@ -62,7 +62,7 @@ public class VirtualRepository : HeroRepository
         return null;
     }
 
-    public override bool UpdateHero(Guid id, HeroEntity updatedHero)
+    public override bool Update(Guid id, HeroEntity updatedHero)
     {
         var index = 0;
 
@@ -86,11 +86,11 @@ public class VirtualRepository : HeroRepository
         return false;
     }
 
-    public override bool DeleteHero(Guid id)
+    public override bool Delete(Guid id)
     {
         var indexToDelete = -1;
 
-        foreach (var i in Enumerable.Range(0, RepositorySize))
+        foreach (var i in Enumerable.Range(0, Size))
         {
             if (heroes[i].Id == id)
             {

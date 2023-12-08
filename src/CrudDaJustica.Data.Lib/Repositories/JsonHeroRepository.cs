@@ -7,9 +7,9 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// <summary>
 /// Represents a repository that stores information in a JSON file.
 /// </summary>
-public class JsonRepository : HeroRepository
+public class JsonHeroRepository : HeroRepository
 {
-    public int RepositorySize { get; private set; }
+    public int Size { get; private set; }
 
 
     // Summary: The path of the json file where hero data is stored.
@@ -22,12 +22,12 @@ public class JsonRepository : HeroRepository
     private string HeroDataTempFilePath => Path.Combine(heroDataDirPath, "heroTemp.json");
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JsonRepository"/> class.
+    /// Initializes a new instance of the <see cref="JsonHeroRepository"/> class.
     /// </summary>
     /// <param name="pagingService"> Service responsible for paging the json file. </param>
     /// <param name="heroDataFilePath"> The absolute path where the hero data file is or will be stored. </param>
     /// <exception cref="ArgumentException"></exception>
-    public JsonRepository(PagingService pagingService, string heroDataFilePath) : base(pagingService)
+    public JsonHeroRepository(PagingService pagingService, string heroDataFilePath) : base(pagingService)
     {
         var dirPath = Path.GetDirectoryName(heroDataFilePath);
         if (string.IsNullOrEmpty(dirPath))
@@ -55,23 +55,23 @@ public class JsonRepository : HeroRepository
                 .Close();
         }
 
-        RepositorySize = File.ReadLines(this.heroDataFilePath).Count();
+        Size = File.ReadLines(this.heroDataFilePath).Count();
     }
 
-    public override bool RegisterHero(HeroEntity newHero)
+    public override bool Register(HeroEntity newHero)
     {
         var heroAsJson = JsonSerializer.Serialize(newHero);
         using (var streamWriter = File.AppendText(heroDataFilePath))
         {
             streamWriter.WriteLine(heroAsJson);
         }
-        RepositorySize++;
+        Size++;
         return true;
     }
 
-    public override IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    public override IEnumerable<HeroEntity> Get(int page, int rows)
     {
-        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+        (var validPage, var validRows) = pagingService.Validate(page, rows, Size);
 
         return File.ReadLines(heroDataFilePath)
             .Skip((validPage - 1) * validRows)
@@ -81,19 +81,19 @@ public class JsonRepository : HeroRepository
             .ToList();
     }
 
-    public override HeroEntity? GetHero(Guid id) => File.ReadLines(heroDataFilePath)
+    public override HeroEntity? Get(Guid id) => File.ReadLines(heroDataFilePath)
                                                 .Select(line => JsonSerializer.Deserialize<HeroEntity>(line))
                                                 .FirstOrDefault(he => he?.Id == id, null);
 
-    public override bool UpdateHero(Guid id, HeroEntity updatedHero) => OverwriteData(id, updatedHero);
+    public override bool Update(Guid id, HeroEntity updatedHero) => OverwriteData(id, updatedHero);
 
-    public override bool DeleteHero(Guid id)
+    public override bool Delete(Guid id)
     {
         var success = OverwriteData(id);
 
         if (success)
         {
-            RepositorySize--;
+            Size--;
         }
 
         return success;

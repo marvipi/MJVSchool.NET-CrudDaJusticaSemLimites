@@ -41,7 +41,7 @@ public class HeroController : ControllerBase
         logger.LogInformation("{timestamp}: getting a page of heroes", DateTime.Now);
 
         var heroes = heroRepository
-            .GetHeroes(page, rows)
+            .Get(page, rows)
             .Select(he => new HeroGetResponse(he.Id, he.Alias, he.Debut, he.FirstName, he.LastName));
 
         return Ok(new HeroGetPagedResponse(heroes, heroRepository.PageRange, heroRepository.CurrentPage, heroRepository.RowsPerPage));
@@ -61,7 +61,7 @@ public class HeroController : ControllerBase
     {
         logger.LogInformation("{timestamp}: getting a hero from the repository", DateTime.Now);
 
-        var hero = heroRepository.GetHero(id);
+        var hero = heroRepository.Get(id);
 
         if (hero is not null)
         {
@@ -99,7 +99,7 @@ public class HeroController : ControllerBase
                 request.FirstName,
                 request.LastName);
 
-            success = heroRepository.RegisterHero(newHero);
+            success = heroRepository.Register(newHero);
         }
 
         if (success)
@@ -142,7 +142,7 @@ public class HeroController : ControllerBase
             request.Debut,
             request.FirstName,
             request.LastName);
-        var success = heroRepository.UpdateHero(id, updatedInformation);
+        var success = heroRepository.Update(id, updatedInformation);
 
         if (success)
         {
@@ -168,7 +168,7 @@ public class HeroController : ControllerBase
     [Route("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var success = heroRepository.DeleteHero(id);
+        var success = heroRepository.Delete(id);
 
         if (success)
         {

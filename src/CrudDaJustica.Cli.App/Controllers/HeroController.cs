@@ -75,7 +75,7 @@ public class HeroController
             CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern,
             CultureInfo.InvariantCulture);
 
-        heroRepository.RegisterHero(new(
+        heroRepository.Register(new(
             Guid.NewGuid(),
             heroFormModel.Alias!, validDate,
             heroFormModel.FirstName!,
@@ -90,7 +90,7 @@ public class HeroController
     /// </returns>
     public IEnumerable<HeroViewModel> List()
     {
-        var heroes = heroRepository.GetHeroes(heroRepository.CurrentPage, heroRepository.RowsPerPage);
+        var heroes = heroRepository.Get(heroRepository.CurrentPage, heroRepository.RowsPerPage);
 
         var heroViewModels = heroes
             .Select(hero => new HeroViewModel(hero.Id, hero.Alias, hero.Debut, hero.FirstName, hero.LastName))
@@ -110,7 +110,7 @@ public class HeroController
             CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern,
             CultureInfo.InvariantCulture);
 
-        heroRepository.UpdateHero(id,
+        heroRepository.Update(id,
             new(id,
             heroFormModel.Alias!,
             validDate,
@@ -122,15 +122,15 @@ public class HeroController
     /// Removes a hero from the repository.
     /// </summary>
     /// <param name="id"> The id of the hero to delete. </param>
-    public void Delete(Guid id) => heroRepository.DeleteHero(id);
+    public void Delete(Guid id) => heroRepository.Delete(id);
 
     /// <summary>
     /// Moves to the next page of the repository, up to the last page.
     /// </summary>
-    public void NextPage() => heroRepository.GetHeroes(heroRepository.CurrentPage + 1, heroRepository.RowsPerPage);
+    public void NextPage() => heroRepository.Get(heroRepository.CurrentPage + 1, heroRepository.RowsPerPage);
 
     /// <summary>
     /// Returns to the previous page of the repository, down to the first page.
     /// </summary>
-    public void PreviousPage() => heroRepository.GetHeroes(heroRepository.CurrentPage - 1, heroRepository.RowsPerPage);
+    public void PreviousPage() => heroRepository.Get(heroRepository.CurrentPage - 1, heroRepository.RowsPerPage);
 }

@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PagingService>();
 
-builder.Services.AddScoped<HeroRepository, SqlServerRepository>(serviceProvider =>
+builder.Services.AddScoped<HeroRepository, SqlServerHeroRepository>(serviceProvider =>
 {
     var pagingService = serviceProvider.GetRequiredService<PagingService>();
 
