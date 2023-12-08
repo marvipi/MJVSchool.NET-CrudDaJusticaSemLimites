@@ -9,6 +9,15 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// </summary>
 public class JsonRepository : IHeroRepository
 {
+    public int CurrentPage { get => pagingService.CurrentPage; }
+    public int RowsPerPage { get => pagingService.RowsPerPage; }
+    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
+    
+
+    private readonly PagingService pagingService;
+    public int RepositorySize { get; private set; }
+
+
     // Summary: The path of the json file where hero data is stored.
     private readonly string heroDataFilePath;
 
@@ -18,14 +27,13 @@ public class JsonRepository : IHeroRepository
     // Summary: A temporary file used to update or delete heroes from the repository.
     private string HeroDataTempFilePath => Path.Combine(heroDataDirPath, "heroTemp.json");
 
-    public int RepositorySize { get; private set; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonRepository"/> class.
     /// </summary>
+    /// <param name="pagingService"> Service responsible for paging the json file. </param>
     /// <param name="heroDataFilePath"> The absolute path where the hero data file is or will be stored. </param>
     /// <exception cref="ArgumentException"></exception>
-    public JsonRepository(string heroDataFilePath)
+    public JsonRepository(PagingService pagingService, string heroDataFilePath)
     {
         var dirPath = Path.GetDirectoryName(heroDataFilePath);
         if (string.IsNullOrEmpty(dirPath))
@@ -53,6 +61,7 @@ public class JsonRepository : IHeroRepository
                 .Close();
         }
 
+        this.pagingService = pagingService;
         RepositorySize = File.ReadLines(this.heroDataFilePath).Count();
     }
 
@@ -67,12 +76,17 @@ public class JsonRepository : IHeroRepository
         return true;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(DataPage page) => File.ReadLines(heroDataFilePath)
-                                                                    .Skip(RowsToSkip(page))
-                                                                    .Take(RowToTake(page))
-                                                                    .Select(line => JsonSerializer.Deserialize<HeroEntity>(line))
-                                                                    .Cast<HeroEntity>()
-                                                                    .ToList();
+    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    {
+        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+
+        return File.ReadLines(heroDataFilePath)
+            .Skip((validPage - 1) * validRows)
+            .Take(validPage * validRows)
+            .Select(line => JsonSerializer.Deserialize<HeroEntity>(line))
+            .Cast<HeroEntity>()
+            .ToList();
+    }
 
     public HeroEntity? GetHero(Guid id) => File.ReadLines(heroDataFilePath)
                                                 .Select(line => JsonSerializer.Deserialize<HeroEntity>(line))
@@ -142,10 +156,4 @@ public class JsonRepository : IHeroRepository
         File.Move(HeroDataTempFilePath, heroDataFilePath, true);
         return fileChanged;
     }
-
-    // Summary: Calculates how many rows of data to skip to reach a given data page.
-    private static int RowsToSkip(DataPage page) => (page.Number - 1) * page.Rows;
-
-    // Summary: Calculates how many rows of data to take in a given data page.
-    private static int RowToTake(DataPage page) => page.Number * page.Rows;
 }

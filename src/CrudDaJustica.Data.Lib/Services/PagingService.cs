@@ -1,17 +1,10 @@
-﻿using CrudDaJustica.Data.Lib.Repositories;
-
-namespace CrudDaJustica.Data.Lib.Services;
+﻿namespace CrudDaJustica.Data.Lib.Services;
 
 /// <summary>
 /// Represents a service that does data paging in a repository.
 /// </summary>
 public class PagingService
 {
-    private int rowsPerPage;
-
-    // Summary: The hero repository being paged by this service.
-    private readonly IHeroRepository heroRepository;
-
     /// <summary>
     /// The first page of data in the repository.
     /// </summary>
@@ -40,26 +33,7 @@ public class PagingService
     /// <summary>
     /// The amount of rows contained in each page of data.
     /// </summary>
-    public int RowsPerPage
-    {
-        get => rowsPerPage;
-        set
-        {
-            rowsPerPage = value < MIN_ROWS_PER_PAGE
-                ? MIN_ROWS_PER_PAGE
-                : value > MAX_ROWS_PER_PAGE
-                ? MAX_ROWS_PER_PAGE
-                : value;
-        }
-    }
-
-    /// <summary>
-    /// Gets the <see cref="CurrentPage"/> and the <see cref="RowsPerPage"/> as a <see cref="Services.DataPage"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="Services.DataPage"/> that can be used to retrieve data from the repository.
-    /// </returns>
-    public DataPage DataPage => new(CurrentPage, RowsPerPage);
+    public int RowsPerPage { get; private set; }
 
     /// <summary>
     /// Produces a range of pages in the range [FIRST_PAGE, LastPage]
@@ -67,40 +41,40 @@ public class PagingService
     public IEnumerable<int> PageRange => Enumerable.Range(FIRST_PAGE, LastPage);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PagingService"/> class.
+    /// Validates and stores the page and rows.
     /// </summary>
-    /// <param name="heroRepository"> The hero repository that will be paged by this service. </param>
-    /// <param name="rowsPerPage"> The amount of rows read per page. </param>
-    public PagingService(IHeroRepository heroRepository, int rowsPerPage)
+    /// <param name="page"> The page to validate. </param>
+    /// <param name="rows"> The amount of rows per data page. </param>
+    /// <param name="repositorySize"> The size of the repository to page. </param>
+    /// <returns></returns>
+    public (int validPage, int validRows) Validate(int page, int rows, int repositorySize)
     {
-        this.heroRepository = heroRepository;
-        RowsPerPage = rowsPerPage;
-        CurrentPage = FIRST_PAGE;
-        CalculateLastPage();
-    }
+        var validRows = rows < MIN_ROWS_PER_PAGE
+            ? MIN_ROWS_PER_PAGE
+            : rows > MAX_ROWS_PER_PAGE
+            ? MAX_ROWS_PER_PAGE
+            : rows;
+        RowsPerPage = validRows;
 
-    /// <summary>
-    /// Jumps to a data page.
-    /// </summary>
-    /// <param name="number"> The number of the page to jump to. </param>
-    /// <remarks> Always stays within range of <see cref="FIRST_PAGE"/> and <see cref="LastPage"/>. </remarks>
-    public void JumpToPage(int number)
-    {
-        CalculateLastPage();
-        CurrentPage = number < FIRST_PAGE
+        CalculateLastPage(RowsPerPage, repositorySize);
+
+        var validPage = page < FIRST_PAGE
             ? FIRST_PAGE
-            : number > LastPage
+            : page > LastPage
             ? LastPage
-            : number;
+            : page;
+        CurrentPage = validPage;
+
+        return (validPage, validRows);
     }
 
-    // Summary: Calculates the last page of the repository based on its size.
-    private void CalculateLastPage()
+    // Summary: Calculates the last page of the repository based on its size and the amount of rows per data page.
+    private void CalculateLastPage(int rowsPerPage, int repositorySize)
     {
-        var numPagesRequired = heroRepository.RepositorySize / (double)RowsPerPage;
-        var lastPage = (int) Math.Ceiling(numPagesRequired);
-        LastPage = lastPage < FIRST_PAGE 
-            ? FIRST_PAGE 
+        var numPagesRequired = repositorySize / (double)rowsPerPage;
+        var lastPage = (int)Math.Ceiling(numPagesRequired);
+        LastPage = lastPage < FIRST_PAGE
+            ? FIRST_PAGE
             : lastPage;
     }
 }

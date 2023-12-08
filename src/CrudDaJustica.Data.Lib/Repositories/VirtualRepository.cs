@@ -11,18 +11,27 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// </remarks>
 public class VirtualRepository : IHeroRepository
 {
+    public int CurrentPage { get => pagingService.CurrentPage; }
+    public int RowsPerPage { get => pagingService.RowsPerPage; }
+    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
+
+
+    private readonly PagingService pagingService;
+    private int RepositorySize => LastFilledIndex(heroes) + 1;
+
+
     // Summary: All heroes registered in this repository.
     private HeroEntity[] heroes;
-
-    public int RepositorySize => LastFilledIndex(heroes) + 1;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VirtualRepository"/> class.
     /// </summary>
-    /// <param name="initialSize"> The amount of rows the repository initially. </param>
-    public VirtualRepository(uint initialSize)
+    /// <param name="pagingService"> The service responsible for paging data repositories. </param>
+    /// <param name="initialSize"> The amount space to reserve for registering new heroes. </param>
+    public VirtualRepository(PagingService pagingService, uint initialSize)
     {
         heroes = new HeroEntity[initialSize];
+        this.pagingService = pagingService;
     }
 
     public bool RegisterHero(HeroEntity newHero)
@@ -36,10 +45,12 @@ public class VirtualRepository : IHeroRepository
         return true;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(DataPage page)
+    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
     {
-        var skip = (page.Number - 1) * page.Rows;
-        var take = page.Number * page.Rows;
+        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+
+        var skip = (validPage - 1) * validRows;
+        var take = validPage * validRows;
         var heroesPage = heroes[skip..take];
 
         var amountNonNull = LastFilledIndex(heroesPage) + 1;

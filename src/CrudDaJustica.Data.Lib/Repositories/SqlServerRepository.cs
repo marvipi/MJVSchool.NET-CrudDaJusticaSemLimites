@@ -10,6 +10,23 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// </summary>
 public class SqlServerRepository : IHeroRepository
 {
+    public int CurrentPage { get => pagingService.CurrentPage; }
+    public int RowsPerPage { get => pagingService.RowsPerPage; }
+    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
+
+    public int RepositorySize
+    {
+        get
+        {
+            countHeroCommand.Connection.Open();
+            var heroRepositorySize = (int)countHeroCommand.ExecuteScalar();
+            countHeroCommand.Connection.Close();
+            return heroRepositorySize;
+        }
+    }
+    private readonly PagingService pagingService;
+
+
     private readonly SqlConnection sqlConnection;
 
     // Summary: Counts how many heroes are registered in the database.
@@ -47,23 +64,14 @@ public class SqlServerRepository : IHeroRepository
 
     private const string DELETE_HERO = @"EXECUTE DeleteHero @Id = @id;";
 
-    public int RepositorySize
-    {
-        get
-        {
-            countHeroCommand.Connection.Open();
-            var heroRepositorySize = (int)countHeroCommand.ExecuteScalar();
-            countHeroCommand.Connection.Close();
-            return heroRepositorySize;
-        }
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlServerRepository"/> class.
     /// </summary>
+    /// <param name="pagingService"> Service responsible for paging the database. </param>
     /// <param name="connectionString"> A connection string for a SQL Server database. </param>
-    public SqlServerRepository(string connectionString)
+    public SqlServerRepository(PagingService pagingService, string connectionString)
     {
+        this.pagingService = pagingService;
         sqlConnection = new(connectionString);
         countHeroCommand = new(COUNT_HERO, sqlConnection);
 
@@ -90,13 +98,15 @@ public class SqlServerRepository : IHeroRepository
         return amountOfHeroesCreated > 0;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(DataPage page)
+    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
     {
+        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+
         var getHeroesCommand = new SqlCommand(GET_HEROES_PAGED, sqlConnection);
         getHeroesCommand.Parameters.AddRange(new SqlParameter[]
         {
-            new("page", page.Number),
-            new("rows", page.Rows),
+            new("page", validPage),
+            new("rows", validRows),
         });
 
         getHeroesCommand.Connection.Open();

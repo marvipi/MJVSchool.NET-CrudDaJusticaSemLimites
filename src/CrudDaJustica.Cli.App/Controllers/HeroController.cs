@@ -1,6 +1,5 @@
 ﻿using CrudDaJustica.Cli.App.Models;
 using CrudDaJustica.Data.Lib.Repositories;
-using CrudDaJustica.Data.Lib.Services;
 using System.Globalization;
 
 namespace CrudDaJustica.Cli.App.Controllers;
@@ -11,22 +10,19 @@ namespace CrudDaJustica.Cli.App.Controllers;
 public class HeroController
 {
     private readonly IHeroRepository heroRepository;
-    private readonly PagingService pagingService;
 
     /// <summary>
     /// The current data page of the repository.
     /// </summary>
-    public int CurrentPage => pagingService.CurrentPage;
+    public int CurrentPage => heroRepository.CurrentPage;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
     /// <param name="heroRepository"> Repository that stores information about the heroes. </param>
-    /// <param name="pagingService"> Service responsible for paging the data hero repository. </param>
-    public HeroController(IHeroRepository heroRepository, PagingService pagingService)
+    public HeroController(IHeroRepository heroRepository)
     {
         this.heroRepository = heroRepository;
-        this.pagingService = pagingService;
     }
 
     /// <summary>
@@ -94,8 +90,7 @@ public class HeroController
     /// </returns>
     public IEnumerable<HeroViewModel> List()
     {
-        var currentPage = pagingService.DataPage;
-        var heroes = heroRepository.GetHeroes(currentPage);
+        var heroes = heroRepository.GetHeroes(heroRepository.CurrentPage, heroRepository.RowsPerPage);
 
         var heroViewModels = heroes
             .Select(hero => new HeroViewModel(hero.Id, hero.Alias, hero.Debut, hero.FirstName, hero.LastName))
@@ -132,10 +127,10 @@ public class HeroController
     /// <summary>
     /// Moves to the next page of the repository, up to the last page.
     /// </summary>
-    public void NextPage() => pagingService.JumpToPage(pagingService.CurrentPage + 1);
+    public void NextPage() => heroRepository.GetHeroes(heroRepository.CurrentPage + 1, heroRepository.RowsPerPage);
 
     /// <summary>
     /// Returns to the previous page of the repository, down to the first page.
     /// </summary>
-    public void PreviousPage() => pagingService.JumpToPage(pagingService.CurrentPage - 1);
+    public void PreviousPage() => heroRepository.GetHeroes(heroRepository.CurrentPage - 1, heroRepository.RowsPerPage);
 }
