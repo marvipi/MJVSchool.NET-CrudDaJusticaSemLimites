@@ -19,6 +19,24 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudDaJustica.Data.Lib.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudDaJustica.WebApi", "src\CrudDaJustica.WebApi\CrudDaJustica.WebApi.csproj", "{E7650945-772B-4F1A-9330-4FFF9ABC8DAE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "res", "res", "{44E077EF-8C4C-4D1B-8F21-CB63FBC99D62}"
+	ProjectSection(SolutionItems) = preProject
+		res\cli-form-validation.png = res\cli-form-validation.png
+		res\cli-form.png = res\cli-form.png
+		res\cli.png = res\cli.png
+		res\CrudDaJustica.Arquitetura.png = res\CrudDaJustica.Arquitetura.png
+		res\CrudDaJustica.Cli.App.png = res\CrudDaJustica.Cli.App.png
+		res\CrudDaJustica.Cli.Lib.png = res\CrudDaJustica.Cli.Lib.png
+		res\CrudDaJustica.Data.Lib.png = res\CrudDaJustica.Data.Lib.png
+		res\CrudDaJustica.WebApi.png = res\CrudDaJustica.WebApi.png
+		res\CrudDaJustica.Website.png = res\CrudDaJustica.Website.png
+		res\web-api.png = res\web-api.png
+		res\web-confirmation-prompt.png = res\web-confirmation-prompt.png
+		res\web-createhero-validation.png = res\web-createhero-validation.png
+		res\web-heroes.png = res\web-heroes.png
+		res\web-updatehero-validation.png = res\web-updatehero-validation.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

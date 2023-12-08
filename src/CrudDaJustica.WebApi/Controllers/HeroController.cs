@@ -15,19 +15,16 @@ public class HeroController : ControllerBase
 {
     private readonly ILogger<HeroController> logger;
     private readonly IHeroRepository heroRepository;
-    private readonly PagingService pagingService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
     /// <param name="logger"> A service that logs requests and responses. </param>
     /// <param name="heroRepository"> A data repository that stores hero information. </param>
-    /// <param name="pagingService"> A service responsible for paging a hero repository. </param>
-    public HeroController(ILogger<HeroController> logger, IHeroRepository heroRepository, PagingService pagingService)
+    public HeroController(ILogger<HeroController> logger, IHeroRepository heroRepository)
     {
         this.logger = logger;
         this.heroRepository = heroRepository;
-        this.pagingService = pagingService;
     }
 
     /// <summary>
@@ -43,16 +40,11 @@ public class HeroController : ControllerBase
     {
         logger.LogInformation("{timestamp}: getting a page of heroes", DateTime.Now);
 
-        pagingService.RowsPerPage = rows;
-        pagingService.JumpToPage(page);
-
-        var dataPage = pagingService.DataPage;
-
         var heroes = heroRepository
-            .GetHeroes(dataPage)
+            .GetHeroes(page, rows)
             .Select(he => new HeroGetResponse(he.Id, he.Alias, he.Debut, he.FirstName, he.LastName));
 
-        return Ok(new HeroGetPagedResponse(heroes, pagingService.PageRange, dataPage.Number, dataPage.Rows));
+        return Ok(new HeroGetPagedResponse(heroes, heroRepository.PageRange, heroRepository.CurrentPage, heroRepository.RowsPerPage));
     }
 
     /// <summary>

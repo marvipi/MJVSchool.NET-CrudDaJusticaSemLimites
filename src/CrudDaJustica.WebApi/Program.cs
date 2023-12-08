@@ -10,20 +10,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<PagingService>();
+
 builder.Services.AddScoped<IHeroRepository, SqlServerRepository>(serviceProvider =>
 {
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+
     var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
     var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
     var connectionString = builder.Configuration.GetConnectionString("SqlServer");
     connectionString = string.Format(connectionString!, username, password);
-    return new(connectionString);
-});
 
-builder.Services.AddScoped<PagingService>(serviceProvider =>
-{
-    var heroRepo = serviceProvider.GetRequiredService<IHeroRepository>();
-    var rowsPerPage = PagingService.MIN_ROWS_PER_PAGE;
-    return new(heroRepo, rowsPerPage);
+    return new(pagingService, connectionString);
 });
 
 var app = builder.Build();

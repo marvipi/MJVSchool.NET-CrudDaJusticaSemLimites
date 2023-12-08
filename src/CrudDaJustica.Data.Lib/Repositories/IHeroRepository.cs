@@ -1,5 +1,4 @@
 ﻿using CrudDaJustica.Data.Lib.Models;
-using CrudDaJustica.Data.Lib.Services;
 
 namespace CrudDaJustica.Data.Lib.Repositories;
 
@@ -9,9 +8,19 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 public interface IHeroRepository
 {
     /// <summary>
-    /// The amount of information stored in this repository
+    /// The page of data to retrieve.
     /// </summary>
-    public int RepositorySize { get; }
+    public int CurrentPage { get; }
+
+    /// <summary>
+    /// The amount of data retrieved per <see cref="GetHeroes(int, int)"/>.
+    /// </summary>
+    public int RowsPerPage { get; }
+
+    /// <summary>
+    /// A sequence of all pages in a hero repository.
+    /// </summary>
+    public IEnumerable<int> PageRange { get; }
 
     /// <summary>
     /// Registers a new hero in this repository.
@@ -23,8 +32,9 @@ public interface IHeroRepository
     /// Retrieves information about all heroes registered in a given page.
     /// </summary>
     /// <param name="page"> The page where information will be retrieved. </param>
+    /// <param name="rows"> The amount of data to get. </param>
     /// <returns> A collection of all heroes registered in the page. </returns>
-    public IEnumerable<HeroEntity> GetHeroes(DataPage page);
+    public IEnumerable<HeroEntity> GetHeroes(int page, int rows);
 
     /// <summary>
     /// Retrieves information about a hero.
