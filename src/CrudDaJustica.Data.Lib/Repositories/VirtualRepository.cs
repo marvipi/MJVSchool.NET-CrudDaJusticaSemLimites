@@ -9,16 +9,9 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// <remarks>
 /// All data will be lost when the system is shutdown.
 /// </remarks>
-public class VirtualRepository : IHeroRepository
+public class VirtualRepository : HeroRepository
 {
-    public int CurrentPage { get => pagingService.CurrentPage; }
-    public int RowsPerPage { get => pagingService.RowsPerPage; }
-    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
-
-
-    private readonly PagingService pagingService;
     private int RepositorySize => LastFilledIndex(heroes) + 1;
-
 
     // Summary: All heroes registered in this repository.
     private HeroEntity[] heroes;
@@ -28,13 +21,12 @@ public class VirtualRepository : IHeroRepository
     /// </summary>
     /// <param name="pagingService"> The service responsible for paging data repositories. </param>
     /// <param name="initialSize"> The amount space to reserve for registering new heroes. </param>
-    public VirtualRepository(PagingService pagingService, uint initialSize)
+    public VirtualRepository(PagingService pagingService, uint initialSize) : base(pagingService)
     {
         heroes = new HeroEntity[initialSize];
-        this.pagingService = pagingService;
     }
 
-    public bool RegisterHero(HeroEntity newHero)
+    public override bool RegisterHero(HeroEntity newHero)
     {
         if (RepositorySize == heroes.Length)
         {
@@ -45,7 +37,7 @@ public class VirtualRepository : IHeroRepository
         return true;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    public override IEnumerable<HeroEntity> GetHeroes(int page, int rows)
     {
         (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
 
@@ -58,7 +50,7 @@ public class VirtualRepository : IHeroRepository
         return nonNullHeroes;
     }
 
-    public HeroEntity? GetHero(Guid id)
+    public override HeroEntity? GetHero(Guid id)
     {
         foreach (var hero in heroes)
         {
@@ -70,7 +62,7 @@ public class VirtualRepository : IHeroRepository
         return null;
     }
 
-    public bool UpdateHero(Guid id, HeroEntity updatedHero)
+    public override bool UpdateHero(Guid id, HeroEntity updatedHero)
     {
         var index = 0;
 
@@ -94,7 +86,7 @@ public class VirtualRepository : IHeroRepository
         return false;
     }
 
-    public bool DeleteHero(Guid id)
+    public override bool DeleteHero(Guid id)
     {
         var indexToDelete = -1;
 

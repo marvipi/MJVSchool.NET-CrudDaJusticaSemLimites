@@ -9,7 +9,7 @@ namespace CrudDaJustica.Cli.App.Controllers;
 /// </summary>
 public class HeroController
 {
-    private readonly IHeroRepository heroRepository;
+    private readonly HeroRepository heroRepository;
 
     /// <summary>
     /// The current data page of the repository.
@@ -20,7 +20,7 @@ public class HeroController
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
     /// <param name="heroRepository"> Repository that stores information about the heroes. </param>
-    public HeroController(IHeroRepository heroRepository)
+    public HeroController(HeroRepository heroRepository)
     {
         this.heroRepository = heroRepository;
     }

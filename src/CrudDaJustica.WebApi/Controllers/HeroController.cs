@@ -14,21 +14,21 @@ namespace CrudDaJustica.WebApi.Controllers;
 public class HeroController : ControllerBase
 {
     private readonly ILogger<HeroController> logger;
-    private readonly IHeroRepository heroRepository;
+    private readonly HeroRepository heroRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
     /// <param name="logger"> A service that logs requests and responses. </param>
     /// <param name="heroRepository"> A data repository that stores hero information. </param>
-    public HeroController(ILogger<HeroController> logger, IHeroRepository heroRepository)
+    public HeroController(ILogger<HeroController> logger, HeroRepository heroRepository)
     {
         this.logger = logger;
         this.heroRepository = heroRepository;
     }
 
     /// <summary>
-    /// Produces all heroes registered in a given page of an <see cref="IHeroRepository"/>.
+    /// Produces all heroes registered in a given page of an <see cref="HeroRepository"/>.
     /// </summary>
     /// <param name="page"> The page where the heroes are registered. </param>
     /// <param name="rows"> The amount of heroes to fetch. </param>
@@ -48,7 +48,7 @@ public class HeroController : ControllerBase
     }
 
     /// <summary>
-    /// Searches for a hero in an <see cref="IHeroRepository"/>.
+    /// Searches for a hero in an <see cref="HeroRepository"/>.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to get. </param>
     /// <returns> 

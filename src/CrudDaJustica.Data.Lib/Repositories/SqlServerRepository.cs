@@ -8,12 +8,8 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// <summary>
 /// Represents a SQL Server database that stores information about heroes.
 /// </summary>
-public class SqlServerRepository : IHeroRepository
+public class SqlServerRepository : HeroRepository
 {
-    public int CurrentPage { get => pagingService.CurrentPage; }
-    public int RowsPerPage { get => pagingService.RowsPerPage; }
-    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
-
     public int RepositorySize
     {
         get
@@ -24,8 +20,6 @@ public class SqlServerRepository : IHeroRepository
             return heroRepositorySize;
         }
     }
-    private readonly PagingService pagingService;
-
 
     private readonly SqlConnection sqlConnection;
 
@@ -69,9 +63,8 @@ public class SqlServerRepository : IHeroRepository
     /// </summary>
     /// <param name="pagingService"> Service responsible for paging the database. </param>
     /// <param name="connectionString"> A connection string for a SQL Server database. </param>
-    public SqlServerRepository(PagingService pagingService, string connectionString)
+    public SqlServerRepository(PagingService pagingService, string connectionString) : base(pagingService)
     {
-        this.pagingService = pagingService;
         sqlConnection = new(connectionString);
         countHeroCommand = new(COUNT_HERO, sqlConnection);
 
@@ -79,7 +72,7 @@ public class SqlServerRepository : IHeroRepository
         sqlConnection.Close();
     }
 
-    public bool RegisterHero(HeroEntity newHero)
+    public override bool RegisterHero(HeroEntity newHero)
     {
         var createHeroCommand = new SqlCommand(INSERT_HERO, sqlConnection);
         createHeroCommand.Parameters.AddRange(new SqlParameter[]
@@ -98,7 +91,7 @@ public class SqlServerRepository : IHeroRepository
         return amountOfHeroesCreated > 0;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    public override IEnumerable<HeroEntity> GetHeroes(int page, int rows)
     {
         (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
 
@@ -123,7 +116,7 @@ public class SqlServerRepository : IHeroRepository
         return heroes;
     }
 
-    public HeroEntity? GetHero(Guid id)
+    public override HeroEntity? GetHero(Guid id)
     {
         var getHeroCommand = new SqlCommand(GET_HERO, sqlConnection);
         getHeroCommand.Parameters.AddWithValue("id", id);
@@ -155,7 +148,7 @@ public class SqlServerRepository : IHeroRepository
         return new HeroEntity { Id = idFromQuery, Alias = alias, Debut = debut, FirstName = firstName, LastName = lastName };
     }
 
-    public bool UpdateHero(Guid id, HeroEntity updatedHero)
+    public override bool UpdateHero(Guid id, HeroEntity updatedHero)
     {
         var updateHeroCommand = new SqlCommand(UPDATE_HERO, sqlConnection);
         updateHeroCommand.Parameters.AddRange(new SqlParameter[]
@@ -174,7 +167,7 @@ public class SqlServerRepository : IHeroRepository
         return rowsUpdated > 0;
     }
 
-    public bool DeleteHero(Guid id)
+    public override bool DeleteHero(Guid id)
     {
         var deleteHeroCommand = new SqlCommand(DELETE_HERO, sqlConnection);
         deleteHeroCommand.Parameters.AddWithValue("id", id);
