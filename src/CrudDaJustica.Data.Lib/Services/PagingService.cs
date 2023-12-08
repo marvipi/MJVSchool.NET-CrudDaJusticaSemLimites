@@ -98,7 +98,9 @@ public class PagingService
     private void CalculateLastPage()
     {
         var numPagesRequired = heroRepository.RepositorySize / (double)RowsPerPage;
-        var lastPage = Math.Ceiling(numPagesRequired);
-        LastPage = Convert.ToInt32(lastPage);
+        var lastPage = (int) Math.Ceiling(numPagesRequired);
+        LastPage = lastPage < FIRST_PAGE 
+            ? FIRST_PAGE 
+            : lastPage;
     }
 }
