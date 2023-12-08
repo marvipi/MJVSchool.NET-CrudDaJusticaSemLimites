@@ -8,80 +8,73 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// <summary>
 /// Represents a SQL Server database that stores information about heroes.
 /// </summary>
-public class SqlServerRepository : IHeroRepository
+public class SqlServerHeroRepository : HeroRepository
 {
-    public int CurrentPage { get => pagingService.CurrentPage; }
-    public int RowsPerPage { get => pagingService.RowsPerPage; }
-    public IEnumerable<int> PageRange { get => pagingService.PageRange; }
-
-    public int RepositorySize
+    public int Size
     {
         get
         {
-            countHeroCommand.Connection.Open();
-            var heroRepositorySize = (int)countHeroCommand.ExecuteScalar();
-            countHeroCommand.Connection.Close();
+            countCommand.Connection.Open();
+            var heroRepositorySize = (int)countCommand.ExecuteScalar();
+            countCommand.Connection.Close();
             return heroRepositorySize;
         }
     }
-    private readonly PagingService pagingService;
-
 
     private readonly SqlConnection sqlConnection;
 
     // Summary: Counts how many heroes are registered in the database.
     // Remarks: Used to calculate the repository size.
-    private readonly SqlCommand countHeroCommand;
+    private readonly SqlCommand countCommand;
 
-    private const string COUNT_HERO =
+    private const string COUNT =
         @"SELECT COUNT(*) as HeroRepositorySize
           FROM HeroInformation;";
 
-    private const string INSERT_HERO =
+    private const string INSERT =
         @"EXECUTE InsertHero @Alias = @alias, 
                              @Debut = @debut, 
                              @FirstName = @firstName, 
                              @LastName = @lastName;";
 
-    private const string GET_HEROES_PAGED =
+    private const string GET_PAGED =
         @"SELECT Id, Alias, Debut, FirstName, LastName
           FROM HeroInformation
           ORDER BY Alias
           OFFSET (@page - 1) * @rows ROWS
           FETCH NEXT @rows ROWS ONLY;";
 
-    private const string GET_HERO =
+    private const string GET =
         @"SELECT Id, Alias, Debut, FirstName, LastName
           FROM HeroInformation
           WHERE Id = @id;";
 
-    private const string UPDATE_HERO =
+    private const string UPDATE =
         @"EXECUTE UpdateHero @Id = @id,
                              @Alias = @alias,
                              @Debut = @debut,
                              @FirstName = @firstName,
                              @LastName = @lastName;";
 
-    private const string DELETE_HERO = @"EXECUTE DeleteHero @Id = @id;";
+    private const string DELETE = @"EXECUTE DeleteHero @Id = @id;";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SqlServerRepository"/> class.
+    /// Initializes a new instance of the <see cref="SqlServerHeroRepository"/> class.
     /// </summary>
     /// <param name="pagingService"> Service responsible for paging the database. </param>
     /// <param name="connectionString"> A connection string for a SQL Server database. </param>
-    public SqlServerRepository(PagingService pagingService, string connectionString)
+    public SqlServerHeroRepository(PagingService pagingService, string connectionString) : base(pagingService)
     {
-        this.pagingService = pagingService;
         sqlConnection = new(connectionString);
-        countHeroCommand = new(COUNT_HERO, sqlConnection);
+        countCommand = new(COUNT, sqlConnection);
 
         sqlConnection.Open();
         sqlConnection.Close();
     }
 
-    public bool RegisterHero(HeroEntity newHero)
+    public override bool Register(HeroEntity newHero)
     {
-        var createHeroCommand = new SqlCommand(INSERT_HERO, sqlConnection);
+        var createHeroCommand = new SqlCommand(INSERT, sqlConnection);
         createHeroCommand.Parameters.AddRange(new SqlParameter[]
         {
             new("id", newHero.Id),
@@ -98,11 +91,11 @@ public class SqlServerRepository : IHeroRepository
         return amountOfHeroesCreated > 0;
     }
 
-    public IEnumerable<HeroEntity> GetHeroes(int page, int rows)
+    public override IEnumerable<HeroEntity> Get(int page, int rows)
     {
-        (var validPage, var validRows) = pagingService.Validate(page, rows, RepositorySize);
+        (var validPage, var validRows) = pagingService.Validate(page, rows, Size);
 
-        var getHeroesCommand = new SqlCommand(GET_HEROES_PAGED, sqlConnection);
+        var getHeroesCommand = new SqlCommand(GET_PAGED, sqlConnection);
         getHeroesCommand.Parameters.AddRange(new SqlParameter[]
         {
             new("page", validPage),
@@ -123,9 +116,9 @@ public class SqlServerRepository : IHeroRepository
         return heroes;
     }
 
-    public HeroEntity? GetHero(Guid id)
+    public override HeroEntity? Get(Guid id)
     {
-        var getHeroCommand = new SqlCommand(GET_HERO, sqlConnection);
+        var getHeroCommand = new SqlCommand(GET, sqlConnection);
         getHeroCommand.Parameters.AddWithValue("id", id);
 
         getHeroCommand.Connection.Open();
@@ -155,9 +148,9 @@ public class SqlServerRepository : IHeroRepository
         return new HeroEntity { Id = idFromQuery, Alias = alias, Debut = debut, FirstName = firstName, LastName = lastName };
     }
 
-    public bool UpdateHero(Guid id, HeroEntity updatedHero)
+    public override bool Update(Guid id, HeroEntity updatedHero)
     {
-        var updateHeroCommand = new SqlCommand(UPDATE_HERO, sqlConnection);
+        var updateHeroCommand = new SqlCommand(UPDATE, sqlConnection);
         updateHeroCommand.Parameters.AddRange(new SqlParameter[]
         {
             new("id", id),
@@ -174,9 +167,9 @@ public class SqlServerRepository : IHeroRepository
         return rowsUpdated > 0;
     }
 
-    public bool DeleteHero(Guid id)
+    public override bool Delete(Guid id)
     {
-        var deleteHeroCommand = new SqlCommand(DELETE_HERO, sqlConnection);
+        var deleteHeroCommand = new SqlCommand(DELETE, sqlConnection);
         deleteHeroCommand.Parameters.AddWithValue("id", id);
 
         deleteHeroCommand.Connection.Open();

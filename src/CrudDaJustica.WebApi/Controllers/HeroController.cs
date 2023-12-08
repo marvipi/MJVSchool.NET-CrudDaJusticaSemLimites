@@ -14,21 +14,21 @@ namespace CrudDaJustica.WebApi.Controllers;
 public class HeroController : ControllerBase
 {
     private readonly ILogger<HeroController> logger;
-    private readonly IHeroRepository heroRepository;
+    private readonly HeroRepository heroRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
     /// <param name="logger"> A service that logs requests and responses. </param>
     /// <param name="heroRepository"> A data repository that stores hero information. </param>
-    public HeroController(ILogger<HeroController> logger, IHeroRepository heroRepository)
+    public HeroController(ILogger<HeroController> logger, HeroRepository heroRepository)
     {
         this.logger = logger;
         this.heroRepository = heroRepository;
     }
 
     /// <summary>
-    /// Produces all heroes registered in a given page of an <see cref="IHeroRepository"/>.
+    /// Produces all heroes registered in a given page of an <see cref="HeroRepository"/>.
     /// </summary>
     /// <param name="page"> The page where the heroes are registered. </param>
     /// <param name="rows"> The amount of heroes to fetch. </param>
@@ -41,14 +41,14 @@ public class HeroController : ControllerBase
         logger.LogInformation("{timestamp}: getting a page of heroes", DateTime.Now);
 
         var heroes = heroRepository
-            .GetHeroes(page, rows)
+            .Get(page, rows)
             .Select(he => new HeroGetResponse(he.Id, he.Alias, he.Debut, he.FirstName, he.LastName));
 
         return Ok(new HeroGetPagedResponse(heroes, heroRepository.PageRange, heroRepository.CurrentPage, heroRepository.RowsPerPage));
     }
 
     /// <summary>
-    /// Searches for a hero in an <see cref="IHeroRepository"/>.
+    /// Searches for a hero in an <see cref="HeroRepository"/>.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to get. </param>
     /// <returns> 
@@ -61,7 +61,7 @@ public class HeroController : ControllerBase
     {
         logger.LogInformation("{timestamp}: getting a hero from the repository", DateTime.Now);
 
-        var hero = heroRepository.GetHero(id);
+        var hero = heroRepository.Get(id);
 
         if (hero is not null)
         {
@@ -99,7 +99,7 @@ public class HeroController : ControllerBase
                 request.FirstName,
                 request.LastName);
 
-            success = heroRepository.RegisterHero(newHero);
+            success = heroRepository.Register(newHero);
         }
 
         if (success)
@@ -142,7 +142,7 @@ public class HeroController : ControllerBase
             request.Debut,
             request.FirstName,
             request.LastName);
-        var success = heroRepository.UpdateHero(id, updatedInformation);
+        var success = heroRepository.Update(id, updatedInformation);
 
         if (success)
         {
@@ -168,7 +168,7 @@ public class HeroController : ControllerBase
     [Route("{id}")]
     public IActionResult Delete(Guid id)
     {
-        var success = heroRepository.DeleteHero(id);
+        var success = heroRepository.Delete(id);
 
         if (success)
         {
