@@ -10,7 +10,7 @@ namespace CrudDaJustica.Data.Lib.Repositories;
 /// </summary>
 public class SqlServerHeroRepository : HeroRepository
 {
-    public int Size
+    private int Size
     {
         get
         {
