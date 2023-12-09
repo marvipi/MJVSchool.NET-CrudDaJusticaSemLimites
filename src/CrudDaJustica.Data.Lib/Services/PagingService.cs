@@ -46,7 +46,11 @@ public class PagingService
     /// <param name="page"> The page to validate. </param>
     /// <param name="rows"> The amount of rows per data page. </param>
     /// <param name="repositorySize"> The size of the repository to page. </param>
-    /// <returns></returns>
+    /// <returns> 
+    /// A pair of page and rows where
+    ///     validPage is between <see cref="FIRST_PAGE"/> and <see cref="LastPage"/>, and
+    ///     validRows is between <see cref="MIN_ROWS_PER_PAGE"/> and <see cref="MAX_ROWS_PER_PAGE"/>. 
+    /// </returns>
     public (int validPage, int validRows) Validate(int page, int rows, int repositorySize)
     {
         var validRows = rows < MIN_ROWS_PER_PAGE
