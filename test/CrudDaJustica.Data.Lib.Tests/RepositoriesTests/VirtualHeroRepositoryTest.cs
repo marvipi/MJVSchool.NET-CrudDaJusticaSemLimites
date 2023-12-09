@@ -11,7 +11,7 @@ internal class VirtualHeroRepositoryTest
     public void RegisterAndGet_AddsAndRetrievesHero()
     {
         var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
+        var heroRepo = new VirtualHeroRepository(pagingService, initialSize: 0);
 
         var newHeroId = Guid.NewGuid();
         var newHero = new HeroEntity(newHeroId, "Doesn't matter", new(1, 1, 1), "Doesn't matter", "Doesn't matter");
@@ -30,6 +30,8 @@ internal class VirtualHeroRepositoryTest
     {
         var pagingService = new PagingService();
         var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
+        var newHero = new HeroEntity(Guid.NewGuid(), "Doesn't matter", new(1, 1, 1), "Doesn't matter", "Doesn't matter");
+        heroRepo.Register(newHero);
 
         var nonExistentId = Guid.NewGuid();
         var returnedHero = heroRepo.Get(nonExistentId);

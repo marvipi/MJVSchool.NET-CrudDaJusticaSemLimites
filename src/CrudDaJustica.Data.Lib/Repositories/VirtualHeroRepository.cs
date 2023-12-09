@@ -30,7 +30,8 @@ public class VirtualHeroRepository : HeroRepository
     {
         if (Size == heroes.Length)
         {
-            Array.Resize(ref heroes, heroes.Length * 2);
+            // Size + 1 guards against arrays of length 0.
+            Array.Resize(ref heroes, (Size + 1) * 2);
         }
         var firstEmptyIndex = LastFilledIndex(heroes) + 1;
         heroes[firstEmptyIndex] = newHero;
@@ -109,7 +110,6 @@ public class VirtualHeroRepository : HeroRepository
                 indexToDelete = i;
                 break;
             }
-
         }
 
         if (indexToDelete < 0)
