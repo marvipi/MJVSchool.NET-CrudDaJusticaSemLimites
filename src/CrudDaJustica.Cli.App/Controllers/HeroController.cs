@@ -1,4 +1,5 @@
 ﻿using CrudDaJustica.Cli.App.Models;
+using CrudDaJustica.Data.Lib.Models;
 using CrudDaJustica.Data.Lib.Repositories;
 using System.Globalization;
 
@@ -110,12 +111,11 @@ public class HeroController
             CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern,
             CultureInfo.InvariantCulture);
 
-        heroRepository.Update(id,
-            new(id,
-            heroFormModel.Alias!,
-            validDate,
-            heroFormModel.FirstName!,
-            heroFormModel.LastName!));
+        heroRepository.Update(new HeroEntity(id,
+                                             heroFormModel.Alias!,
+                                             validDate,
+                                             heroFormModel.FirstName!,
+                                             heroFormModel.LastName!));
     }
 
     /// <summary>

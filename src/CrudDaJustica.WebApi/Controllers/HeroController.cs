@@ -92,12 +92,11 @@ public class HeroController : ControllerBase
         Guid newHeroId = Guid.NewGuid();
         if (success = ModelState.IsValid)
         {
-            var newHero = new HeroEntity(
-                newHeroId,
-                request.Alias,
-                request.Debut,
-                request.FirstName,
-                request.LastName);
+            var newHero = new HeroEntity(newHeroId,
+                                         request.Alias,
+                                         request.Debut,
+                                         request.FirstName,
+                                         request.LastName);
 
             success = heroRepository.Register(newHero);
         }
@@ -136,13 +135,12 @@ public class HeroController : ControllerBase
             return BadRequest();
         }
 
-        var updatedInformation = new HeroEntity(
-            id,
-            request.Alias,
-            request.Debut,
-            request.FirstName,
-            request.LastName);
-        var success = heroRepository.Update(id, updatedInformation);
+        var updatedInformation = new HeroEntity(id,
+                                                request.Alias,
+                                                request.Debut,
+                                                request.FirstName,
+                                                request.LastName);
+        var success = heroRepository.Update(updatedInformation);
 
         if (success)
         {
