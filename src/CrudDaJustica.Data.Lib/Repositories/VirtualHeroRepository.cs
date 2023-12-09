@@ -43,6 +43,11 @@ public class VirtualHeroRepository : HeroRepository
 
         var skip = (validPage - 1) * validRows;
         var take = validPage * validRows;
+
+        take = take > heroes.Length
+            ? heroes.Length
+            : take;
+
         var heroesPage = heroes[skip..take];
 
         var amountNonNull = LastFilledIndex(heroesPage) + 1;
@@ -54,6 +59,11 @@ public class VirtualHeroRepository : HeroRepository
     {
         foreach (var hero in heroes)
         {
+            if (hero is null)
+            {
+                break;
+            }
+
             if (hero.Id == id)
             {
                 return hero;
@@ -68,6 +78,11 @@ public class VirtualHeroRepository : HeroRepository
 
         foreach (var hero in heroes[..])
         {
+            if (hero is null)
+            {
+                break;
+            }
+
             if (hero.Id == updatedHero.Id)
             {
                 heroes[index] = new HeroEntity(updatedHero.Id,
