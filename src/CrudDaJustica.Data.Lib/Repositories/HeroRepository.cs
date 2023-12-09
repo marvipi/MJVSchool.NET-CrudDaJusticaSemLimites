@@ -54,9 +54,8 @@ public abstract class HeroRepository
     /// <summary>
     /// Updates the information about a registered hero.
     /// </summary>
-    /// <param name="id"> The id of the hero to update. </param>
     /// <param name="updatedHero"> A <see cref="HeroEntity"/> containing update to date information about the hero. </param>
-    public abstract bool Update(Guid id, HeroEntity updatedHero);
+    public abstract bool Update(HeroEntity updatedHero);
 
     /// <summary>
     /// Deletes a hero from the repository.

@@ -62,22 +62,19 @@ public class VirtualHeroRepository : HeroRepository
         return null;
     }
 
-    public override bool Update(Guid id, HeroEntity updatedHero)
+    public override bool Update(HeroEntity updatedHero)
     {
         var index = 0;
 
         foreach (var hero in heroes[..])
         {
-            if (hero.Id == id)
+            if (hero.Id == updatedHero.Id)
             {
-                heroes[index] = new HeroEntity()
-                {
-                    Id = id,
-                    Alias = updatedHero.Alias,
-                    Debut = updatedHero.Debut,
-                    FirstName = updatedHero.FirstName,
-                    LastName = updatedHero.LastName,
-                };
+                heroes[index] = new HeroEntity(updatedHero.Id,
+                                               updatedHero.Alias,
+                                               updatedHero.Debut,
+                                               updatedHero.FirstName,
+                                               updatedHero.LastName);
                 return true;
             }
             index++;

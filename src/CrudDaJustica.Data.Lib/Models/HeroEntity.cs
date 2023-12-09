@@ -14,7 +14,7 @@ public class HeroEntity
     /// <summary>
     /// The name of a hero's secret identity.
     /// </summary>
-    public string Alias { get; set; } = null!;
+    public string Alias { get; set; }
 
     /// <summary>
     /// The date when a hero was first seen.
@@ -24,17 +24,14 @@ public class HeroEntity
     /// <summary>
     /// The first name of the person behind the secret identity.
     /// </summary>
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; }
 
     /// <summary>
     /// The last name of the person behind the secret identity.
     /// </summary>
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HeroEntity"/> class.
-    /// </summary>
-    public HeroEntity() { }
+    private HeroEntity() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroEntity"/> class.

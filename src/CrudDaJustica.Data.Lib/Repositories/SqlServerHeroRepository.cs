@@ -145,15 +145,15 @@ public class SqlServerHeroRepository : HeroRepository
         var firstName = sqlReader.GetString(3);
         var lastName = sqlReader.GetString(4);
 
-        return new HeroEntity { Id = idFromQuery, Alias = alias, Debut = debut, FirstName = firstName, LastName = lastName };
+        return new HeroEntity(idFromQuery, alias, debut, firstName, lastName);
     }
 
-    public override bool Update(Guid id, HeroEntity updatedHero)
+    public override bool Update(HeroEntity updatedHero)
     {
         var updateHeroCommand = new SqlCommand(UPDATE, sqlConnection);
         updateHeroCommand.Parameters.AddRange(new SqlParameter[]
         {
-            new("id", id),
+            new("id", updatedHero.Id),
             new("alias", updatedHero.Alias),
             new("debut", updatedHero.Debut),
             new("firstName", updatedHero.FirstName),

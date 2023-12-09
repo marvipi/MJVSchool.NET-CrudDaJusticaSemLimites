@@ -85,7 +85,7 @@ public class JsonHeroRepository : HeroRepository
                                                 .Select(line => JsonSerializer.Deserialize<HeroEntity>(line))
                                                 .FirstOrDefault(he => he?.Id == id, null);
 
-    public override bool Update(Guid id, HeroEntity updatedHero) => OverwriteData(id, updatedHero);
+    public override bool Update(HeroEntity updatedHero) => OverwriteData(updatedHero.Id, updatedHero);
 
     public override bool Delete(Guid id)
     {
