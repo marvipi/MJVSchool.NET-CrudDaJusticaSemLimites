@@ -11,17 +11,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PagingService>();
-
-builder.Services.AddScoped<HeroRepository, SqlServerHeroRepository>(serviceProvider =>
+builder.Services.AddScoped<SqlServerHeroDal, SqlServerHeroAdo>(serviceProvider =>
 {
-    var pagingService = serviceProvider.GetRequiredService<PagingService>();
-
     var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
     var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
     var connectionString = builder.Configuration.GetConnectionString("SqlServer");
     connectionString = string.Format(connectionString!, username, password);
+    return new(connectionString);
+});
 
-    return new(pagingService, connectionString);
+builder.Services.AddScoped<HeroRepository, SqlServerHeroRepository>(serviceProvider =>
+{
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+    var sqlServerHeroDal = serviceProvider.GetRequiredService<SqlServerHeroDal>();
+    return new(pagingService, sqlServerHeroDal);
 });
 
 var app = builder.Build();

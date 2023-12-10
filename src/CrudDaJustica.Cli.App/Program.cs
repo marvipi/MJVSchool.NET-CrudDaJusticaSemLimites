@@ -11,7 +11,8 @@ var connectionString = string.Format(
     sqlServerPassword);
 
 var pagingService = new PagingService();
-var heroRepository = new SqlServerHeroRepository(pagingService, connectionString);
+var sqlServerHeroDal = new SqlServerHeroAdo(connectionString);
+var heroRepository = new SqlServerHeroRepository(pagingService, sqlServerHeroDal);
 var heroController = new HeroController(heroRepository);
 
 var cli = new CLI(heroController);
