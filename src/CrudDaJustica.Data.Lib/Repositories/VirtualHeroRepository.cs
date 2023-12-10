@@ -30,7 +30,8 @@ public class VirtualHeroRepository : HeroRepository
     {
         if (Size == heroes.Length)
         {
-            Array.Resize(ref heroes, heroes.Length * 2);
+            // Size + 1 guards against arrays of length 0.
+            Array.Resize(ref heroes, (Size + 1) * 2);
         }
         var firstEmptyIndex = LastFilledIndex(heroes) + 1;
         heroes[firstEmptyIndex] = newHero;
@@ -43,6 +44,11 @@ public class VirtualHeroRepository : HeroRepository
 
         var skip = (validPage - 1) * validRows;
         var take = validPage * validRows;
+
+        take = take > heroes.Length
+            ? heroes.Length
+            : take;
+
         var heroesPage = heroes[skip..take];
 
         var amountNonNull = LastFilledIndex(heroesPage) + 1;
@@ -54,6 +60,11 @@ public class VirtualHeroRepository : HeroRepository
     {
         foreach (var hero in heroes)
         {
+            if (hero is null)
+            {
+                break;
+            }
+
             if (hero.Id == id)
             {
                 return hero;
@@ -68,6 +79,11 @@ public class VirtualHeroRepository : HeroRepository
 
         foreach (var hero in heroes[..])
         {
+            if (hero is null)
+            {
+                break;
+            }
+
             if (hero.Id == updatedHero.Id)
             {
                 heroes[index] = new HeroEntity(updatedHero.Id,
@@ -94,7 +110,6 @@ public class VirtualHeroRepository : HeroRepository
                 indexToDelete = i;
                 break;
             }
-
         }
 
         if (indexToDelete < 0)
@@ -102,11 +117,13 @@ public class VirtualHeroRepository : HeroRepository
             return false;
         }
 
-        foreach (var i in Enumerable.Range(indexToDelete, heroes.Length - 2))
+        var lastIndex = heroes.Length - 1;
+        for (int i = indexToDelete; i <= lastIndex - 1; i++)
         {
             heroes[i] = heroes[i + 1];
         }
 
+        heroes[lastIndex] = null!;
         return true;
     }
 
