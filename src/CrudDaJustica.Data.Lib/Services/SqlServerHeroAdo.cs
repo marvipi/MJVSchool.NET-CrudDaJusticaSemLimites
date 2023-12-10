@@ -2,15 +2,13 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace CrudDaJustica.Data.Lib.Repositories;
+namespace CrudDaJustica.Data.Lib.Services;
 
 /// <summary>
 /// Represents a data access layer that uses ADO.NET to connect to a SQL Server database.
 /// </summary>
 public class SqlServerHeroAdo : SqlServerHeroDal
 {
-    private readonly SqlConnection sqlConnection;
-
     // Summary: Counts how many heroes are registered in the database.
     // Remarks: Used to calculate the repository size.
     private readonly SqlCommand countCommand;

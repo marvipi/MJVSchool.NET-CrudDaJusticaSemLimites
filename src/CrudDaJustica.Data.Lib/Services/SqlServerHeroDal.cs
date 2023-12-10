@@ -1,6 +1,7 @@
 ﻿using CrudDaJustica.Data.Lib.Models;
+using Microsoft.Data.SqlClient;
 
-namespace CrudDaJustica.Data.Lib.Repositories;
+namespace CrudDaJustica.Data.Lib.Services;
 
 /// <summary>
 /// Represents the behavior shared by all SQL Server data access services.
@@ -38,6 +39,8 @@ public abstract class SqlServerHeroDal
                              @LastName = @lastName;";
 
     protected const string DELETE = @"EXECUTE DeleteHero @Id = @id;";
+
+    protected SqlConnection sqlConnection = null!;
 
     /// <summary>
     /// The amount of rows contained in the hero table of the database.
