@@ -1,6 +1,5 @@
 # MJV School .NET - CRUD da Justiça
-O CRUD da Justiça é uma aplicação simples que lida com informações sobre super-heróis. Programas desse tipo são maçantes por natureza, e por isso, escolhi um tema leve para tentar torná-lo menos entediante.
-Ele possui duas interfaces de usuário: uma web implementada com o ASP.NET MVC e uma de console. Você pode vê-las na seção de imagens deste readme.
+O CRUD da Justiça é uma aplicação simples que lida com informações sobre super-heróis. Ele possui duas interfaces de usuário: uma web implementada com o ASP.NET MVC e uma de console. Você pode vê-las na seção de imagens deste readme.
 
 ### Sumário
 - [Melhorias](#melhorias)
@@ -9,14 +8,12 @@ Ele possui duas interfaces de usuário: uma web implementada com o ASP.NET MVC e
 - [Imagens](#imagens)
 
 ### Melhorias
-- Manipulação dos dados através de Stored Procedures.
-- Acesso aos dados protegido pelas Views do SQL Server.
+- Consulta e manipulação dos dados através de Views e Stored Procedures.
 - Microsserviço de paginação desacoplado dos controladores e repositórios.
+- Acesso a bancos de dados por meio de microsserviços.
 
 ### Design patterns e padrões de projeto
 Estes conceitos não foram abordados durante o bootcamp, porém apliquei alguns deles para assegurar a qualidade da implementação.
-- MVC: o website é estruturado neste padrão.
-- MVP e Mediator: a comunicação entre a interface de linha de comando e o backend é mediada pelos controladores.
 - MVVM: ambas as interfaces de usuário seguem este padrão.
 - Repository ou Façade: os controladores não sabem com quais repositórios eles se comunicam.
 - Decorator: a interface de linha de comando é implementada neste padrão.
