@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PagingService>();
-builder.Services.AddScoped<SqlServerHeroDal, SqlServerHeroAdo>(serviceProvider =>
+builder.Services.AddScoped<SqlServerHeroDal, SqlServerHeroDapper>(serviceProvider =>
 {
     var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
     var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
