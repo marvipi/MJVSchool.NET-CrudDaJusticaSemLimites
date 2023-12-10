@@ -9,8 +9,6 @@ namespace CrudDaJustica.Data.Lib.Services;
 /// </summary>
 public class SqlServerHeroAdo : SqlServerHeroDal
 {
-    private readonly SqlConnection sqlConnection;
-
     // Summary: Counts how many heroes are registered in the database.
     // Remarks: Used to calculate the repository size.
     private readonly SqlCommand countCommand;

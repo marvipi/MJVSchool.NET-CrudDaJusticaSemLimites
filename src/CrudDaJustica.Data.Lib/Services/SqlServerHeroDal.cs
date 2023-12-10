@@ -1,4 +1,5 @@
 ﻿using CrudDaJustica.Data.Lib.Models;
+using Microsoft.Data.SqlClient;
 
 namespace CrudDaJustica.Data.Lib.Services;
 
@@ -38,6 +39,8 @@ public abstract class SqlServerHeroDal
                              @LastName = @lastName;";
 
     protected const string DELETE = @"EXECUTE DeleteHero @Id = @id;";
+
+    protected SqlConnection sqlConnection = null!;
 
     /// <summary>
     /// The amount of rows contained in the hero table of the database.
