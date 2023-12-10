@@ -1,6 +1,6 @@
 ﻿using CrudDaJustica.Data.Lib.Models;
 
-namespace CrudDaJustica.Data.Lib.Repositories;
+namespace CrudDaJustica.Data.Lib.Services;
 
 /// <summary>
 /// Represents the behavior shared by all SQL Server data access services.

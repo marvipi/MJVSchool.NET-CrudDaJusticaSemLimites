@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace CrudDaJustica.Data.Lib.Repositories;
+namespace CrudDaJustica.Data.Lib.Services;
 
 /// <summary>
 /// Represents a data access layer that uses ADO.NET to connect to a SQL Server database.
