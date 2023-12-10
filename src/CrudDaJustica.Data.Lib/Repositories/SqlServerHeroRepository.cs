@@ -21,7 +21,6 @@ public class SqlServerHeroRepository : HeroRepository
     }
 
     public override bool Register(HeroEntity newHero) => sqlServerHeroDal.Register(newHero);
-    
 
     public override IEnumerable<HeroEntity> Get(int page, int rows)
     {

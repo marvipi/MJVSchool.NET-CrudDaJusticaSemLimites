@@ -59,9 +59,9 @@ internal class VirtualHeroRepositoryTest
         Assert.That(heroesInPage, Is.Empty);
     }
 
-    [TestCase(1, (uint) 10)]
-    [TestCase(6, (uint) 11)]
-    [TestCase(12, (uint) 12)]
+    [TestCase(1, (uint)10)]
+    [TestCase(6, (uint)11)]
+    [TestCase(12, (uint)12)]
     public void Update_IdIsRegistered_UpdatesTheHeroWithAMatchingId(int element, uint initialSize)
     {
         var heroRepo = InitializeHeroRepository(initialSize);
