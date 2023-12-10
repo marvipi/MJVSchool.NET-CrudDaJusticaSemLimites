@@ -8,13 +8,13 @@ namespace CrudDaJustica.Data.Lib.Test.RepositoriesTests;
 internal class VirtualHeroRepositoryTest
 {
     [Test]
-    public void RegisterAndGet_AddsAndRetrievesHero()
+    public void RegisterAndGet_EmptyRepo_AddsAndRetrievesHero()
     {
         var pagingService = new PagingService();
         var heroRepo = new VirtualHeroRepository(pagingService, initialSize: 0);
 
         var newHeroId = Guid.NewGuid();
-        var newHero = new HeroEntity(newHeroId, "Doesn't matter", new(1, 1, 1), "Doesn't matter", "Doesn't matter");
+        var newHero = new HeroEntity(newHeroId, "Specter", new(1940, 2, 1), "Jim", "Corrigan");
         var success = heroRepo.Register(newHero);
         var heroInRepo = heroRepo.Get(newHeroId);
 
@@ -70,9 +70,9 @@ internal class VirtualHeroRepositoryTest
         var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
 
         var heroToUpdateId = Guid.NewGuid();
-        var heroToUpdate = new HeroEntity(heroToUpdateId, "Super", new(1, 1, 1), "Man", "Dude");
+        var heroToUpdate = new HeroEntity(heroToUpdateId, "Supperguy", new(1844, 5, 8), "Clerk", "Kurt");
         heroRepo.Register(heroToUpdate);
-        var updatedHero = new HeroEntity(heroToUpdateId, "Sapper", new(2023, 12, 09), "Bro", "Guy");
+        var updatedHero = new HeroEntity(heroToUpdateId, "Superman", new(1938, 6, 1), "Clark", "Kent");
         var success = heroRepo.Update(updatedHero);
 
         var heroInRepo = heroRepo.Get(heroToUpdateId);
@@ -92,7 +92,7 @@ internal class VirtualHeroRepositoryTest
         var heroesBeforeUpdate = getHeroes.Invoke();
 
         var heroToUpdate = heroesBeforeUpdate.Last();
-        var updatedHero = new HeroEntity(heroToUpdate.Id, "Superhero", new(1, 1, 1), "Super", "Hero");
+        var updatedHero = new HeroEntity(heroToUpdate.Id, "Wonder Woman", new(1, 1, 1), "Diana", "of Themyscira");
         heroRepo.Update(updatedHero);
 
         var otherHeroesBeforeUpdate = heroesBeforeUpdate
@@ -128,7 +128,7 @@ internal class VirtualHeroRepositoryTest
         var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
 
         var heroToDeleteId = Guid.NewGuid();
-        var heroToDelete = new HeroEntity(heroToDeleteId, "Begone", new(2023, 12, 9), "Deleted", "Hero");
+        var heroToDelete = new HeroEntity(heroToDeleteId, "Batman", new(1939, 5, 1), "Bruce", "Wayne");
         heroRepo.Register(heroToDelete);
         var success = heroRepo.Delete(heroToDeleteId);
 
@@ -149,7 +149,7 @@ internal class VirtualHeroRepositoryTest
         var otherHeroesBeforeDeletion = getHeroes.Invoke();
 
         var heroToDeleteId = Guid.NewGuid();
-        var heroToDelete = new HeroEntity(heroToDeleteId, "Removed", new(1, 1, 1), "Gone", "Forever");
+        var heroToDelete = new HeroEntity(heroToDeleteId, "Zatara", new(1938, 6, 1), "Giovanni", "Zatara");
         heroRepo.Register(heroToDelete);
         heroRepo.Delete(heroToDeleteId);
 
