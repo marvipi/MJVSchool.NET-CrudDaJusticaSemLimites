@@ -8,9 +8,10 @@ O CRUD da Justiça é uma aplicação simples que lida com informações sobre s
 - [Imagens](#imagens)
 
 ### Melhorias
-- Consulta e manipulação dos dados através de Views e Stored Procedures.
 - Microsserviço de paginação desacoplado dos controladores e repositórios.
+- Consulta e manipulação dos dados através de Views e Stored Procedures.
 - Acesso a bancos de dados por meio de microsserviços.
+- Testes automatizados com os frameworks NUnit e Moq.
 
 ### Design patterns e padrões de projeto
 Estes conceitos não foram abordados durante o bootcamp, porém apliquei alguns deles para assegurar a qualidade da implementação.
