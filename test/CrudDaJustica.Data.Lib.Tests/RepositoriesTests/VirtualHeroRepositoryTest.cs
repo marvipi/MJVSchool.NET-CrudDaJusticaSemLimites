@@ -192,7 +192,7 @@ internal class VirtualHeroRepositoryTest
         {
             newHero = new(Guid.NewGuid(),
                           "Alias " + index,
-                          debut.AddDays(1),
+                          debut.AddDays(index),
                           "First name " + index,
                           "Last name " + index);
             heroRepo.Register(newHero);
