@@ -117,11 +117,13 @@ public class VirtualHeroRepository : HeroRepository
             return false;
         }
 
-        foreach (var i in Enumerable.Range(indexToDelete, heroes.Length - 2))
+        var lastIndex = heroes.Length - 1;
+        for (int i = indexToDelete; i <= lastIndex - 1; i++)
         {
             heroes[i] = heroes[i + 1];
         }
 
+        heroes[lastIndex] = null!;
         return true;
     }
 

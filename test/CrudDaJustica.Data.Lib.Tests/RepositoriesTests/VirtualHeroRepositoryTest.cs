@@ -28,14 +28,11 @@ internal class VirtualHeroRepositoryTest
     [Test]
     public void Get_IdIsntRegistered_ReturnsNull()
     {
-        var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
-        var newHero = new HeroEntity(Guid.NewGuid(), "Doesn't matter", new(1, 1, 1), "Doesn't matter", "Doesn't matter");
-        heroRepo.Register(newHero);
+        var heroRepo = InitializeHeroRepository(PagingService.MIN_ROWS_PER_PAGE);
 
         var nonExistentId = Guid.NewGuid();
-        var returnedHero = heroRepo.Get(nonExistentId);
 
+        var returnedHero = heroRepo.Get(nonExistentId);
         Assert.That(returnedHero, Is.Null);
     }
 
@@ -44,8 +41,7 @@ internal class VirtualHeroRepositoryTest
     [TestCase(1, 100, (uint)25, 25)]
     public void Get_PageIsNotEmpty_ReturnsACollectionOfHeroEntity(int page, int rows, uint initialSize, int expectedCount)
     {
-        var pagingService = new PagingService();
-        var heroRepo = InitializeHeroRepository(pagingService, initialSize);
+        var heroRepo = InitializeHeroRepository(initialSize);
 
         var heroesInPage = heroRepo.Get(page, rows);
 
@@ -63,15 +59,16 @@ internal class VirtualHeroRepositoryTest
         Assert.That(heroesInPage, Is.Empty);
     }
 
-    [Test]
-    public void Update_IdIsRegistered_UpdatesTheHeroWithAMatchingId()
+    [TestCase(1, (uint) 10)]
+    [TestCase(6, (uint) 11)]
+    [TestCase(12, (uint) 12)]
+    public void Update_IdIsRegistered_UpdatesTheHeroWithAMatchingId(int element, uint initialSize)
     {
-        var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
+        var heroRepo = InitializeHeroRepository(initialSize);
+        var heroToUpdateId = heroRepo
+            .Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE)
+            .ElementAt(element - 1).Id;
 
-        var heroToUpdateId = Guid.NewGuid();
-        var heroToUpdate = new HeroEntity(heroToUpdateId, "Supperguy", new(1844, 5, 8), "Clerk", "Kurt");
-        heroRepo.Register(heroToUpdate);
         var updatedHero = new HeroEntity(heroToUpdateId, "Superman", new(1938, 6, 1), "Clark", "Kent");
         var success = heroRepo.Update(updatedHero);
 
@@ -83,20 +80,21 @@ internal class VirtualHeroRepositoryTest
         });
     }
 
-    [Test]
-    public void Update_IdIsRegistered_DoesntChangeAnyOtherHero()
+    [TestCase(1, (uint)3)]
+    [TestCase(2, (uint)3)]
+    [TestCase(3, (uint)3)]
+    public void Update_IdIsRegistered_DoesntChangeAnyOtherHero(int element, uint initialSize)
     {
-        var pagingService = new PagingService();
-        var heroRepo = InitializeHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
-        var getHeroes = () => heroRepo.Get(pagingService.CurrentPage, pagingService.RowsPerPage);
-        var heroesBeforeUpdate = getHeroes.Invoke();
+        var heroRepo = InitializeHeroRepository(initialSize);
+        var getHeroes = () => heroRepo.Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE);
+        var heroToUpdate = getHeroes.Invoke().ElementAt(element - 1);
+        var otherHeroesBeforeUpdate = getHeroes
+            .Invoke()
+            .Where(hero => hero.Id != heroToUpdate.Id);
 
-        var heroToUpdate = heroesBeforeUpdate.Last();
         var updatedHero = new HeroEntity(heroToUpdate.Id, "Wonder Woman", new(1, 1, 1), "Diana", "of Themyscira");
         heroRepo.Update(updatedHero);
 
-        var otherHeroesBeforeUpdate = heroesBeforeUpdate
-            .Where(hero => hero.Id != heroToUpdate.Id);
         var otherHeroesAfterUpdate = getHeroes
             .Invoke()
             .Where(hero => hero.Id != updatedHero.Id);
@@ -106,30 +104,33 @@ internal class VirtualHeroRepositoryTest
     [Test]
     public void Update_IdIsntRegistered_DoesntChangeAnyHero()
     {
-        var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
+        var heroRepo = InitializeHeroRepository(PagingService.MIN_ROWS_PER_PAGE);
+        var getHeroes = () => heroRepo.Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE);
+        var heroesBeforeUpdate = getHeroes.Invoke();
 
         var nonExistentId = Guid.NewGuid();
         var updatedHero = new HeroEntity(nonExistentId, "Doesn't matter", new(1, 1, 1), "Doesn't matter", "Doesn't matter");
         var success = heroRepo.Update(updatedHero);
 
-        var getResult = heroRepo.Get(nonExistentId);
+        var heroesAfterUpdate = getHeroes.Invoke();
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.False);
-            Assert.That(getResult, Is.Null);
+            Assert.That(heroesAfterUpdate, Is.EquivalentTo(heroesBeforeUpdate));
         });
     }
 
-    [Test]
-    public void Delete_IdIsRegistered_DeletesHeroWithAMatchingId()
+    [TestCase(1, (uint)4)]
+    [TestCase(5, (uint)10)]
+    [TestCase(6, (uint)6)]
+    public void Delete_IdIsRegistered_DeletesHeroWithAMatchingId(int element, uint initialSize)
     {
-        var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
+        var heroRepo = InitializeHeroRepository(initialSize);
+        var heroToDeleteId = heroRepo
+            .Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE)
+            .ElementAt(element - 1)
+            .Id;
 
-        var heroToDeleteId = Guid.NewGuid();
-        var heroToDelete = new HeroEntity(heroToDeleteId, "Batman", new(1939, 5, 1), "Bruce", "Wayne");
-        heroRepo.Register(heroToDelete);
         var success = heroRepo.Delete(heroToDeleteId);
 
         var getReturn = heroRepo.Get(heroToDeleteId);
@@ -140,22 +141,23 @@ internal class VirtualHeroRepositoryTest
         });
     }
 
-    [Test]
-    public void Delete_IdIsRegistered_DoesntDeleteAnyOtherHero()
+    [TestCase(1, (uint)3)]
+    [TestCase(2, (uint)6)]
+    [TestCase(7, (uint)7)]
+    public void Delete_IdIsRegistered_DoesntDeleteAnyOtherHero(int element, uint initialSize)
     {
-        var pagingService = new PagingService();
-        var heroRepo = new VirtualHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
-        var getHeroes = () => heroRepo.Get(pagingService.CurrentPage, pagingService.RowsPerPage);
-        var otherHeroesBeforeDeletion = getHeroes.Invoke();
+        var heroRepo = InitializeHeroRepository(initialSize);
+        var countHeroes = () => heroRepo.Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE);
+        var heroToDeleteId = countHeroes
+            .Invoke()
+            .ElementAt(element - 1).Id;
+        var otherHeroesBeforeDeletion = countHeroes
+            .Invoke()
+            .Where(hero => hero.Id != heroToDeleteId);
 
-        var heroToDeleteId = Guid.NewGuid();
-        var heroToDelete = new HeroEntity(heroToDeleteId, "Zatara", new(1938, 6, 1), "Giovanni", "Zatara");
-        heroRepo.Register(heroToDelete);
         heroRepo.Delete(heroToDeleteId);
 
-        otherHeroesBeforeDeletion = otherHeroesBeforeDeletion
-            .Where(hero => hero.Id != heroToDeleteId);
-        var otherHeroesAfterDeletion = getHeroes
+        var otherHeroesAfterDeletion = countHeroes
             .Invoke()
             .Where(hero => hero.Id != heroToDeleteId);
         Assert.That(otherHeroesAfterDeletion, Is.EquivalentTo(otherHeroesBeforeDeletion));
@@ -164,26 +166,25 @@ internal class VirtualHeroRepositoryTest
     [Test]
     public void Delete_IdIsntRegistered_DoesntDeleteAnyHero()
     {
-        var pagingService = new PagingService();
-        var heroRepo = InitializeHeroRepository(pagingService, PagingService.MIN_ROWS_PER_PAGE);
-        var heroCount = () => heroRepo
-            .Get(pagingService.CurrentPage, pagingService.RowsPerPage)
-            .Count();
+        const int INITIAL_SIZE = 25;
+        var heroRepo = InitializeHeroRepository(INITIAL_SIZE);
+        var nonExistentId = Guid.NewGuid();
 
-        var heroCountBeforeDeletion = heroCount.Invoke();
-        var nonExistentId = Guid.Empty;
         var success = heroRepo.Delete(nonExistentId);
-        var heroCountAfterDeletion = heroCount.Invoke();
 
+        var heroCountAfterDeletion = heroRepo
+            .Get(PagingService.FIRST_PAGE, PagingService.MAX_ROWS_PER_PAGE)
+            .Count();
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.False);
-            Assert.That(heroCountAfterDeletion, Is.EqualTo(heroCountBeforeDeletion));
+            Assert.That(heroCountAfterDeletion, Is.EqualTo(INITIAL_SIZE));
         });
     }
 
-    private static VirtualHeroRepository InitializeHeroRepository(PagingService pagingService, uint initialSize)
+    private static VirtualHeroRepository InitializeHeroRepository(uint initialSize)
     {
+        var pagingService = new PagingService();
         var heroRepo = new VirtualHeroRepository(pagingService, initialSize);
         HeroEntity newHero;
 
