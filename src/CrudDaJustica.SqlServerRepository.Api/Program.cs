@@ -13,18 +13,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<PagingService>();
 builder.Services.AddScoped<SqlServerHeroDal, SqlServerHeroDapper>(serviceProvider =>
 {
-	var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
-	var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
-	var connectionString = builder.Configuration.GetConnectionString("SqlServer");
-	connectionString = string.Format(connectionString!, username, password);
-	return new(connectionString);
+    var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
+    var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
+    var connectionString = builder.Configuration.GetConnectionString("SqlServer");
+    connectionString = string.Format(connectionString!, username, password);
+    return new(connectionString);
 });
 
 builder.Services.AddScoped<HeroRepository, SqlServerHeroRepository>(serviceProvider =>
 {
-	var pagingService = serviceProvider.GetRequiredService<PagingService>();
-	var sqlServerHeroDal = serviceProvider.GetRequiredService<SqlServerHeroDal>();
-	return new(pagingService, sqlServerHeroDal);
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+    var sqlServerHeroDal = serviceProvider.GetRequiredService<SqlServerHeroDal>();
+    return new(pagingService, sqlServerHeroDal);
 });
 
 var app = builder.Build();
@@ -32,8 +32,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

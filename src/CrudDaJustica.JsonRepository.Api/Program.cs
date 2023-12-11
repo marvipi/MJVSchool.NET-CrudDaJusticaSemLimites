@@ -18,8 +18,8 @@ string heroDataFilePath = Path.Combine(appDataDir, heroDataDir!, heroDataFile!);
 builder.Services.AddScoped<PagingService>();
 builder.Services.AddScoped<HeroRepository, JsonHeroRepository>(serviceProvider =>
 {
-	var pagingService = serviceProvider.GetRequiredService<PagingService>();
-	return new(pagingService, heroDataFilePath);
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+    return new(pagingService, heroDataFilePath);
 });
 
 var app = builder.Build();
@@ -27,8 +27,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

@@ -13,9 +13,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<PagingService>();
 builder.Services.AddSingleton<HeroRepository, VirtualHeroRepository>(serviceProvider =>
 {
-	var pagingService = serviceProvider.GetRequiredService<PagingService>();
-	const int INITIAL_SIZE = 10;
-	return new(pagingService, INITIAL_SIZE);
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+    const int INITIAL_SIZE = 10;
+    return new(pagingService, INITIAL_SIZE);
 });
 
 var app = builder.Build();
@@ -23,8 +23,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

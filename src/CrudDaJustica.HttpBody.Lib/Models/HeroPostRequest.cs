@@ -10,7 +10,7 @@ namespace CrudDaJustica.HttpDto.Lib.Models;
 /// <param name="FirstName"> The first name of the new hero. </param>
 /// <param name="LastName"> The last name of the new hero. </param>
 public record HeroPostRequest(
-	[Required(AllowEmptyStrings = false, ErrorMessage = "Alias is required")] string Alias,
-	[Required(ErrorMessage = "Debut is required")] DateOnly Debut,
-	[Required(AllowEmptyStrings = false, ErrorMessage = "First name is required")] string FirstName,
-	[Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required")] string LastName);
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Alias is required")] string Alias,
+    [Required(ErrorMessage = "Debut is required")] DateOnly Debut,
+    [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required")] string FirstName,
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required")] string LastName);
