@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.JsonRepositor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.VirtualRepository.Api", "src\CrudDaJustica.VirtualRepository.Api\CrudDaJustica.VirtualRepository.Api.csproj", "{AD6E10ED-C9C2-4040-86A0-CB0E7AA297CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.ApiCommon.Lib", "src\CrudDaJustica.RepositoryShared.Lib\CrudDaJustica.ApiCommon.Lib.csproj", "{985C4C3D-5BBA-43EB-AAC8-28D52061A74D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{AD6E10ED-C9C2-4040-86A0-CB0E7AA297CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD6E10ED-C9C2-4040-86A0-CB0E7AA297CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD6E10ED-C9C2-4040-86A0-CB0E7AA297CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{985C4C3D-5BBA-43EB-AAC8-28D52061A74D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{985C4C3D-5BBA-43EB-AAC8-28D52061A74D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{985C4C3D-5BBA-43EB-AAC8-28D52061A74D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{985C4C3D-5BBA-43EB-AAC8-28D52061A74D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{12F594FF-0673-4D46-8F5F-3373D7E5870F} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 		{AD6E10ED-C9C2-4040-86A0-CB0E7AA297CF} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
+		{985C4C3D-5BBA-43EB-AAC8-28D52061A74D} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDCA97D1-0179-436E-AE45-2EF603387F58}
