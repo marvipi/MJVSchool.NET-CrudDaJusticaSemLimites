@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.HttpDto.Lib",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.SqlServerRepository.Api", "src\CrudDaJustica.SqlServerRepository.Api\CrudDaJustica.SqlServerRepository.Api.csproj", "{12F594FF-0673-4D46-8F5F-3373D7E5870F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.JsonRepository.Api", "src\CrudDaJustica.JsonRepository.Api\CrudDaJustica.JsonRepository.Api.csproj", "{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{12F594FF-0673-4D46-8F5F-3373D7E5870F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12F594FF-0673-4D46-8F5F-3373D7E5870F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12F594FF-0673-4D46-8F5F-3373D7E5870F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{E7650945-772B-4F1A-9330-4FFF9ABC8DAE} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 		{CB822269-87BA-47F4-93B4-6ECF317A2D16} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 		{12F594FF-0673-4D46-8F5F-3373D7E5870F} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
+		{0C08CDF9-3CC6-4C53-BEDF-A0863294EFCC} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDCA97D1-0179-436E-AE45-2EF603387F58}
