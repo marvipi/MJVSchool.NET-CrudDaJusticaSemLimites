@@ -16,4 +16,12 @@
     <ProjectReference Include="..\CrudDaJustica.HttpBody.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.JsonRepository.Api\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.JsonRepository.Api\.editorconfig" />
+  </ItemGroup>
+
 </Project>

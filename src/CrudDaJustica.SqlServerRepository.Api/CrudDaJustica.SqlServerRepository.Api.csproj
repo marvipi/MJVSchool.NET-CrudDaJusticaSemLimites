@@ -29,4 +29,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.SqlServerRepository.Api\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.SqlServerRepository.Api\.editorconfig" />
+  </ItemGroup>
+
 </Project>

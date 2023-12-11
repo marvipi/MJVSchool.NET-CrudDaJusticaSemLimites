@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.HttpBody.Lib\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Projects\MJV School .NET - Crud Da Justica Sem Limites\src\CrudDaJustica.HttpBody.Lib\.editorconfig" />
+  </ItemGroup>
+
 </Project>
