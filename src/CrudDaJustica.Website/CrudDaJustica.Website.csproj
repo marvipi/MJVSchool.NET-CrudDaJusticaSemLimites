@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CrudDaJustica.Data.Lib\CrudDaJustica.Data.Lib.csproj" />
+    <ProjectReference Include="..\CrudDaJustica.HttpBody.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

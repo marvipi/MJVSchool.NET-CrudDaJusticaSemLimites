@@ -1,4 +1,4 @@
-﻿namespace CrudDaJustica.WebApi.Models;
+﻿namespace CrudDaJustica.HttpDto.Lib.Models;
 
 /// <summary>
 /// Initializes a new instance of the <see cref="HeroGetPagedResponse"/> record.

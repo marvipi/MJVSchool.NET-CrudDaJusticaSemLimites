@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "res", "res", "{44E077EF-8C4
 		res\web-updatehero-validation.png = res\web-updatehero-validation.png
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudDaJustica.HttpDto.Lib", "src\CrudDaJustica.HttpBody.Lib\CrudDaJustica.HttpDto.Lib.csproj", "{CB822269-87BA-47F4-93B4-6ECF317A2D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{E7650945-772B-4F1A-9330-4FFF9ABC8DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7650945-772B-4F1A-9330-4FFF9ABC8DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7650945-772B-4F1A-9330-4FFF9ABC8DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB822269-87BA-47F4-93B4-6ECF317A2D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB822269-87BA-47F4-93B4-6ECF317A2D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB822269-87BA-47F4-93B4-6ECF317A2D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB822269-87BA-47F4-93B4-6ECF317A2D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{CAE7289C-5D8F-48E5-8366-0D32B3BF7996} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 		{244FA3EF-0673-436E-929C-CD405C775192} = {476009DC-30F7-49CC-93A8-14F7F1B040CA}
 		{E7650945-772B-4F1A-9330-4FFF9ABC8DAE} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
+		{CB822269-87BA-47F4-93B4-6ECF317A2D16} = {49CE7C7B-6A2F-4AA6-917C-ABAE226F3723}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDCA97D1-0179-436E-AE45-2EF603387F58}

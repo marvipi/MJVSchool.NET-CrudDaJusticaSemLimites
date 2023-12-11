@@ -1,4 +1,5 @@
-﻿using CrudDaJustica.Website.Models;
+﻿using CrudDaJustica.HttpDto.Lib.Models;
+using CrudDaJustica.Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -33,8 +34,9 @@ public class HeroController : Controller
         var httpClient = httpClientFactory.CreateClient("HeroApi");
 
         (var heroes, var pageRange, var validPage, var validRows) = await httpClient.GetFromJsonAsync<HeroGetPagedResponse>($"?page={page}&rows={rows}");
+        var heroViewModels = heroes.Select(hgr => new HeroViewModel(hgr.Id, hgr.Alias, hgr.Debut, hgr.FirstName, hgr.LastName));
 
-        var heroListModel = new HeroListModel(heroes, pageRange, validPage);
+        var heroListModel = new HeroListModel(heroViewModels, pageRange, validPage);
 
         // Used to display this page when another view redirects to here.
         TempData["Rows"] = validRows;

@@ -1,7 +1,7 @@
 ﻿using CrudDaJustica.Data.Lib.Models;
 using CrudDaJustica.Data.Lib.Repositories;
 using CrudDaJustica.Data.Lib.Services;
-using CrudDaJustica.WebApi.Models;
+using CrudDaJustica.HttpDto.Lib.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDaJustica.WebApi.Controllers;
