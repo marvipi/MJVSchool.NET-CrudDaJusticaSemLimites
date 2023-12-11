@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrudDaJustica.RepositoryShared.Lib\CrudDaJustica.ApiCommon.Lib.csproj" />
+    <ProjectReference Include="..\CrudDaJustica.ApiCommon.Lib\CrudDaJustica.ApiCommon.Lib.csproj" />
   </ItemGroup>
 
 </Project>

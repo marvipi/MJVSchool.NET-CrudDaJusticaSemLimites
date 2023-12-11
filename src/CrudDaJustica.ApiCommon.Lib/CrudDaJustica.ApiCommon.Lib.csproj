@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CrudDaJustica.Data.Lib\CrudDaJustica.Data.Lib.csproj" />
-    <ProjectReference Include="..\CrudDaJustica.HttpBody.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
+    <ProjectReference Include="..\CrudDaJustica.HttpDto.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
   </ItemGroup>
 
 </Project>
