@@ -70,7 +70,12 @@ public class HeroController : Controller
         if (success = ModelState.IsValid)
         {
             var httpClient = httpClientFactory.CreateClient("HeroApi");
-            var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, heroFormModel);
+            var postRequest = new HeroPostRequest(Guid.NewGuid(), 
+                                                  heroFormModel.Alias, 
+                                                  heroFormModel.Debut, 
+                                                  heroFormModel.FirstName, 
+                                                  heroFormModel.LastName);
+            var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, postRequest);
 
             success = response.IsSuccessStatusCode;
             ViewBag.Success = success;

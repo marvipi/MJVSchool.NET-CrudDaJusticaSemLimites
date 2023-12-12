@@ -83,10 +83,9 @@ public abstract class HeroApiController : ControllerBase
 		logger.LogInformation("{timestamp}: Attempting to create a new hero", DateTime.Now);
 
 		bool success;
-		Guid newHeroId = Guid.NewGuid();
 		if (success = ModelState.IsValid)
 		{
-			var newHero = new HeroEntity(newHeroId,
+			var newHero = new HeroEntity(request.Id,
 										 request.Alias,
 										 request.Debut,
 										 request.FirstName,
@@ -98,7 +97,7 @@ public abstract class HeroApiController : ControllerBase
 		if (success)
 		{
 			logger.LogInformation("{timestamp}: Hero successfully created", DateTime.Now);
-			return CreatedAtAction(nameof(Get), new { id = newHeroId }, null);
+			return CreatedAtAction(nameof(Get), new { id = request.Id }, null);
 		}
 		else
 		{
