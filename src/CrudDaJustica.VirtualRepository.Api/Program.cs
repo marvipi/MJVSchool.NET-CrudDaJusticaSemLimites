@@ -1,3 +1,6 @@
+using CrudDaJustica.Data.Lib.Repositories;
+using CrudDaJustica.Data.Lib.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,20 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient("VirtualRepository", httpClient =>
+builder.Services.AddSingleton<PagingService>();
+builder.Services.AddSingleton<HeroRepository, VirtualHeroRepository>(serviceProvider =>
 {
-    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:VirtualRepository"]!);
-});
-
-builder.Services.AddHttpClient("JsonRepository", httpClient =>
-{
-    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:JsonRepository"]!);
-
-});
-
-builder.Services.AddHttpClient("SqlServerRepository", httpClient =>
-{
-    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:SqlServerRepository"]!);
+    var pagingService = serviceProvider.GetRequiredService<PagingService>();
+    const int INITIAL_SIZE = 10;
+    return new(pagingService, INITIAL_SIZE);
 });
 
 var app = builder.Build();

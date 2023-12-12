@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CrudDaJustica.WebApi.Models;
+namespace CrudDaJustica.HttpDto.Lib.Models;
 
 /// <summary>
-/// Initializes a new instance of the <see cref="HeroPostRequest"/> record.
+/// Initializes a new instance of the <see cref="HeroPutRequest"/> record.
 /// </summary>
-/// <param name="Alias"> The alias of the new hero. </param>
-/// <param name="Debut"> The date of the new hero's first apparition. </param>
-/// <param name="FirstName"> The first name of the new hero. </param>
-/// <param name="LastName"> The last name of the new hero. </param>
-public record HeroPostRequest(
+/// <param name="Alias"> The new secret identity of a hero. </param>
+/// <param name="Debut"> The new debut date of a hero. </param>
+/// <param name="FirstName"> The new first name of a hero. </param>
+/// <param name="LastName"> The new last name of a hero. </param>
+public record HeroPutRequest(
     [Required(AllowEmptyStrings = false, ErrorMessage = "Alias is required")] string Alias,
     [Required(ErrorMessage = "Debut is required")] DateOnly Debut,
     [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required")] string FirstName,
