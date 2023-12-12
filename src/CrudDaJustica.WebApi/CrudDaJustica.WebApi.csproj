@@ -12,16 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CrudDaJustica.Data.Lib\CrudDaJustica.Data.Lib.csproj" />
-    <ProjectReference Include="..\CrudDaJustica.HttpBody.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EditorConfigFiles Remove="D:\Projects\MJV School .NET - Crud da Justica\src\CrudDaJustica.WebApi\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="D:\Projects\MJV School .NET - Crud da Justica\src\CrudDaJustica.WebApi\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrudDaJustica.HttpDto.Lib\CrudDaJustica.HttpDto.Lib.csproj" />
   </ItemGroup>
 
 </Project>

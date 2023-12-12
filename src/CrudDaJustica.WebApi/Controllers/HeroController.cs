@@ -1,7 +1,4 @@
-﻿using CrudDaJustica.Data.Lib.Models;
-using CrudDaJustica.Data.Lib.Repositories;
-using CrudDaJustica.Data.Lib.Services;
-using CrudDaJustica.HttpDto.Lib.Models;
+﻿using CrudDaJustica.HttpDto.Lib.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDaJustica.WebApi.Controllers;
@@ -13,108 +10,89 @@ namespace CrudDaJustica.WebApi.Controllers;
 [ApiController]
 public class HeroController : ControllerBase
 {
-    private readonly ILogger<HeroController> logger;
-    private readonly HeroRepository heroRepository;
+    private readonly IHttpClientFactory httpClientFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HeroController"/> class.
     /// </summary>
-    /// <param name="logger"> A service that logs requests and responses. </param>
-    /// <param name="heroRepository"> A data repository that stores hero information. </param>
-    public HeroController(ILogger<HeroController> logger, HeroRepository heroRepository)
+    /// <param name="httpClientFactory"> Service used to instantiate the <see cref="HttpClient"/> class. </param>
+    public HeroController(IHttpClientFactory httpClientFactory)
     {
-        this.logger = logger;
-        this.heroRepository = heroRepository;
+        this.httpClientFactory = httpClientFactory;
     }
 
     /// <summary>
-    /// Produces all heroes registered in a given page of an <see cref="HeroRepository"/>.
+    /// Produces all heroes registered in a given page of the SQL Server Database.
     /// </summary>
     /// <param name="page"> The page where the heroes are registered. </param>
     /// <param name="rows"> The amount of heroes to fetch. </param>
     /// <returns> A <see cref="HeroGetPagedResponse"/>. </returns>
     [HttpGet]
-    public IActionResult GetPage(
-        [FromQuery] int page = PagingService.FIRST_PAGE,
-        [FromQuery] int rows = PagingService.MIN_ROWS_PER_PAGE)
+    public async Task<IActionResult> GetPage(
+        [FromQuery] int page = 1,
+        [FromQuery] int rows = 10)
     {
-        logger.LogInformation("{timestamp}: getting a page of heroes", DateTime.Now);
-
-        var heroes = heroRepository
-            .Get(page, rows)
-            .Select(he => new HeroGetResponse(he.Id, he.Alias, he.Debut, he.FirstName, he.LastName));
-
-        return Ok(new HeroGetPagedResponse(heroes, heroRepository.PageRange, heroRepository.CurrentPage, heroRepository.RowsPerPage));
+        var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+        var requestUri = new Uri(sqlServerRepoService.BaseAddress.AbsoluteUri + $"?page={page}&rows={rows}");
+        var response = await sqlServerRepoService.GetFromJsonAsync<HeroGetPagedResponse>(requestUri);
+        return Ok(response);
     }
 
     /// <summary>
-    /// Searches for a hero in an <see cref="HeroRepository"/>.
+    /// Searches for a hero in the SQL Server database.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to get. </param>
     /// <returns> 
-    ///     A <see cref="HeroGetResponse"/> that contains information about the hero.
-    ///     Or <see cref="NotFoundResult"/>, if the given id doesn't match any heroes in the repository.
+    ///     <see cref="NotFoundResult"/> if the given id doesn't match any heroes in the database,
+    ///     or a <see cref="HeroGetResponse"/> that contains information about the hero.
     /// </returns>
     [HttpGet]
     [Route("{id}")]
-    public IActionResult Get(Guid id)
+    public async Task<IActionResult> Get(Guid id)
     {
-        logger.LogInformation("{timestamp}: getting a hero from the repository", DateTime.Now);
+        var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+        var requrestUri = new Uri(sqlServerRepoService.BaseAddress.AbsoluteUri + $"/{id}");
+        var response = await sqlServerRepoService.GetFromJsonAsync<HeroGetResponse>(requrestUri);
 
-        var hero = heroRepository.Get(id);
-
-        if (hero is not null)
+        if (response is null)
         {
-            logger.LogInformation("{timestamp}: hero successfully fetched from the repository", DateTime.Now);
-            return Ok(new HeroGetResponse(hero.Id, hero.Alias, hero.Debut, hero.FirstName, hero.LastName));
-        }
-        else
-        {
-            logger.LogWarning("{timestamp}: hero was not registered in the repository", DateTime.Now);
             return NotFound();
         }
+
+        return Ok(response);
     }
 
     /// <summary>
-    /// Registers a new hero in the repository.
+    /// Registers a new hero in the Json file and in the SQL Server database.
     /// </summary>
     /// <param name="request"> Information about the new hero. </param>
     /// <returns> 
-    ///     A <see cref="CreatedAtActionResult"/> that points to where the new hero was created. 
-    ///     Or <see cref="BadRequestResult"/>, if the request contains invalid data.
+    ///     <see cref="BadRequestResult"/> if the request contains invalid data,
+    ///     or a <see cref="CreatedAtActionResult"/> that points to where the new hero was created. 
     /// </returns>
+    /// <remarks>
+    /// The hero will have a different id in each repository.
+    /// </remarks>
     [HttpPost]
-    public IActionResult Create([FromBody] HeroPostRequest request)
+    public async Task<IActionResult> Create([FromBody] HeroPostRequest request)
     {
-        logger.LogInformation("{timestamp}: Attempting to create a new hero", DateTime.Now);
-
-        bool success;
-        Guid newHeroId = Guid.NewGuid();
-        if (success = ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var newHero = new HeroEntity(newHeroId,
-                                         request.Alias,
-                                         request.Debut,
-                                         request.FirstName,
-                                         request.LastName);
-
-            success = heroRepository.Register(newHero);
-        }
-
-        if (success)
-        {
-            logger.LogInformation("{timestamp}: Hero successfully created", DateTime.Now);
-            return CreatedAtAction(nameof(Get), new { id = newHeroId }, null);
-        }
-        else
-        {
-            logger.LogWarning("{timestamp}: Failed to create a new hero", DateTime.Now);
             return BadRequest();
         }
+
+        var jsonRepoService = httpClientFactory.CreateClient("JsonRepository");
+        var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+
+        await jsonRepoService.PostAsJsonAsync(jsonRepoService.BaseAddress, request);
+        var response = await sqlServerRepoService.PostAsJsonAsync(sqlServerRepoService.BaseAddress, request);
+
+        return Created(response.Headers.Location, null);
+
     }
 
     /// <summary>
-    /// Updates a hero.
+    /// Updates a hero in SQL Server database.
     /// </summary>
     /// <param name="id"> The id of the hero to update. </param>
     /// <param name="request"> New information about the hero. </param>
@@ -125,58 +103,44 @@ public class HeroController : ControllerBase
     /// </returns>
     [HttpPut]
     [Route("{id}")]
-    public IActionResult Update(Guid id, [FromBody] HeroPutRequest request)
+    public async Task<IActionResult> Update(Guid id, [FromBody] HeroPutRequest request)
     {
-        logger.LogInformation("{timestamp}: Attempting to update hero", DateTime.Now);
-
         if (!ModelState.IsValid)
         {
-            logger.LogWarning("{timestamp}: Failed to update hero due to invalid request", DateTime.Now);
             return BadRequest();
         }
 
-        var updatedInformation = new HeroEntity(id,
-                                                request.Alias,
-                                                request.Debut,
-                                                request.FirstName,
-                                                request.LastName);
-        var success = heroRepository.Update(updatedInformation);
+        var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+        var response = await sqlServerRepoService.PutAsJsonAsync(sqlServerRepoService.BaseAddress + $"/{id}", request);
 
-        if (success)
+        if (response.IsSuccessStatusCode)
         {
-            logger.LogInformation("{timestamp}: Hero successfully updated", DateTime.Now);
             return NoContent();
         }
-        else
-        {
-            logger.LogWarning("{timestamp}: Failed to update hero due to non-registered id", DateTime.Now);
-            return NotFound();
-        }
+
+        return NotFound();
     }
 
     /// <summary>
-    /// Deletes a hero from the repository.
+    /// Deletes a hero from the SQL Server database.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to delete. </param>
     /// <returns> 
-    ///     <see cref="NoContentResult"/> if the hero was successfully deleted.
-    ///     Or <see cref="NotFoundResult"/>, if the id is not registered in the repository.
+    ///     <see cref="NoContentResult"/> if the hero was successfully deleted,
+    ///     Or <see cref="NotFoundResult"/> if the id is not registered in the repository.
     /// </returns>
     [HttpDelete]
     [Route("{id}")]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        var success = heroRepository.Delete(id);
+        var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+        var response = await sqlServerRepoService.DeleteAsync(sqlServerRepoService.BaseAddress + $"/{id}");
 
-        if (success)
+        if (response.IsSuccessStatusCode)
         {
-            logger.LogInformation("{timestamp}: Hero successfully deleted", DateTime.Now);
             return NoContent();
         }
-        else
-        {
-            logger.LogWarning("{timestamp}: Failed to delete hero", DateTime.Now);
-            return NotFound();
-        }
+
+        return NotFound();
     }
 }

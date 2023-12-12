@@ -1,6 +1,3 @@
-using CrudDaJustica.Data.Lib.Repositories;
-using CrudDaJustica.Data.Lib.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,21 +7,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<PagingService>();
-builder.Services.AddScoped<SqlServerHeroDal, SqlServerHeroDapper>(serviceProvider =>
+builder.Services.AddHttpClient("VirtualRepository", httpClient =>
 {
-    var username = Environment.GetEnvironmentVariable("MJVSCHOOLDB_USERNAME");
-    var password = Environment.GetEnvironmentVariable("MJVSCHOOLDB_PASSWORD");
-    var connectionString = builder.Configuration.GetConnectionString("SqlServer");
-    connectionString = string.Format(connectionString!, username, password);
-    return new(connectionString);
+    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:VirtualRepository"]!);
 });
 
-builder.Services.AddScoped<HeroRepository, SqlServerHeroRepository>(serviceProvider =>
+builder.Services.AddHttpClient("JsonRepository", httpClient =>
 {
-    var pagingService = serviceProvider.GetRequiredService<PagingService>();
-    var sqlServerHeroDal = serviceProvider.GetRequiredService<SqlServerHeroDal>();
-    return new(pagingService, sqlServerHeroDal);
+    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:JsonRepository"]!);
+
+});
+
+builder.Services.AddHttpClient("SqlServerRepository", httpClient =>
+{
+    httpClient.BaseAddress = new Uri(builder.Configuration["HeroRepoServiceUrls:SqlServerRepository"]!);
 });
 
 var app = builder.Build();
