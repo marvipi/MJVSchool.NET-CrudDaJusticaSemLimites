@@ -2,7 +2,7 @@
 O CRUD da Justiça é uma aplicação simples que lida com informações sobre super-heróis. Ele possui duas interfaces de usuário: uma web implementada com o ASP.NET MVC e uma de console. Você pode vê-las na seção de imagens deste readme.
 
 ### Sumário
-- Novidades(#novidades)
+- [Novidades](#novidades)
 - [Design patterns e padrões de projeto](#design-patterns-e-padr%C3%B5es-de-projeto)
 - [Diagramas UML](#diagramas-uml)
 - [Imagens](#imagens)
