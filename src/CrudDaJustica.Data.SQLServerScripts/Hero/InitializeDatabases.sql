@@ -108,8 +108,8 @@ BEGIN
         BEGIN TRANSACTION
 
         INSERT 
-            INTO Hero (Alias, Debut, FirstName, LastName)
-            VALUES (@trimmedAlias, @Debut, @trimmedFirstName, @trimmedLastName)
+            INTO Hero (Id, Alias, Debut, FirstName, LastName)
+            VALUES (@id, @trimmedAlias, @Debut, @trimmedFirstName, @trimmedLastName)
 
         IF @@TRANCOUNT > 0
             SET @rowsAffected = @@ROWCOUNT
@@ -305,8 +305,8 @@ BEGIN
         BEGIN TRANSACTION
 
         INSERT 
-            INTO Hero (Alias, Debut, FirstName, LastName)
-            VALUES (@trimmedAlias, @Debut, @trimmedFirstName, @trimmedLastName)
+            INTO Hero (Id, Alias, Debut, FirstName, LastName)
+            VALUES (@id, @trimmedAlias, @Debut, @trimmedFirstName, @trimmedLastName)
 
         IF @@TRANCOUNT > 0
             SET @rowsAffected = @@ROWCOUNT

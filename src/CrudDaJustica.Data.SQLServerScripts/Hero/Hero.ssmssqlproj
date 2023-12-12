@@ -32,9 +32,9 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="InitializeDatabases.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-GI663U1\SQLEXPPERSONAL:False:usrMjvSchool</AssociatedConnectionMoniker>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-GI663U1\SQLEXPPERSONAL:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>DESKTOP-GI663U1\SQLEXPPERSONAL</AssociatedConnSrvName>
-          <AssociatedConnUserName>usrMjvSchool</AssociatedConnUserName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>InitializeDatabases.sql</FullPath>
         </FileNode>
       </Items>

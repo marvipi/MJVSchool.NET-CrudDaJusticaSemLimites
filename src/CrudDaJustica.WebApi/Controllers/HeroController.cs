@@ -22,7 +22,7 @@ public class HeroController : ControllerBase
     }
 
     /// <summary>
-    /// Produces all heroes registered in a given page of the SQL Server Database.
+    /// Produces all heroes registered in a given page of the SQL Server repository.
     /// </summary>
     /// <param name="page"> The page where the heroes are registered. </param>
     /// <param name="rows"> The amount of heroes to fetch. </param>
@@ -33,13 +33,13 @@ public class HeroController : ControllerBase
         [FromQuery] int rows = 10)
     {
         var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
-        var requestUri = new Uri(sqlServerRepoService.BaseAddress.AbsoluteUri + $"?page={page}&rows={rows}");
+        var requestUri = new Uri(sqlServerRepoService.BaseAddress?.AbsoluteUri + $"?page={page}&rows={rows}");
         var response = await sqlServerRepoService.GetFromJsonAsync<HeroGetPagedResponse>(requestUri);
         return Ok(response);
     }
 
     /// <summary>
-    /// Searches for a hero in the SQL Server database.
+    /// Searches for a hero in the SQL Server repository.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to get. </param>
     /// <returns> 
@@ -51,7 +51,7 @@ public class HeroController : ControllerBase
     public async Task<IActionResult> Get(Guid id)
     {
         var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
-        var requrestUri = new Uri(sqlServerRepoService.BaseAddress.AbsoluteUri + $"/{id}");
+        var requrestUri = new Uri(sqlServerRepoService.BaseAddress?.AbsoluteUri + $"/{id}");
         var response = await sqlServerRepoService.GetFromJsonAsync<HeroGetResponse>(requrestUri);
 
         if (response is null)
@@ -63,12 +63,12 @@ public class HeroController : ControllerBase
     }
 
     /// <summary>
-    /// Registers a new hero in the Json file and in the SQL Server database.
+    /// Registers a new hero in the Json and SQL Server repositories.
     /// </summary>
     /// <param name="request"> Information about the new hero. </param>
     /// <returns> 
     ///     <see cref="BadRequestResult"/> if the request contains invalid data,
-    ///     or a <see cref="CreatedAtActionResult"/> that points to where the new hero was created. 
+    ///     or a <see cref="CreatedResult"/> that points to where the new hero was created. 
     /// </returns>
     /// <remarks>
     /// The hero will have a different id in each repository.
@@ -87,12 +87,12 @@ public class HeroController : ControllerBase
         await jsonRepoService.PostAsJsonAsync(jsonRepoService.BaseAddress, request);
         var response = await sqlServerRepoService.PostAsJsonAsync(sqlServerRepoService.BaseAddress, request);
 
-        return Created(response.Headers.Location, null);
+        return Created(response.Headers.Location!, new { request.Id });
 
     }
 
     /// <summary>
-    /// Updates a hero in SQL Server database.
+    /// Updates a hero in in the Json and SQL Server repositories.
     /// </summary>
     /// <param name="id"> The id of the hero to update. </param>
     /// <param name="request"> New information about the hero. </param>
@@ -110,7 +110,10 @@ public class HeroController : ControllerBase
             return BadRequest();
         }
 
+        var jsonRepoService = httpClientFactory.CreateClient("JsonRepository");
         var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+
+        await jsonRepoService.PutAsJsonAsync(jsonRepoService.BaseAddress + $"/{id}", request);
         var response = await sqlServerRepoService.PutAsJsonAsync(sqlServerRepoService.BaseAddress + $"/{id}", request);
 
         if (response.IsSuccessStatusCode)
@@ -122,7 +125,7 @@ public class HeroController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a hero from the SQL Server database.
+    /// Deletes a hero from the Json and SQL Server repositories.
     /// </summary>
     /// <param name="id"> The unique identifier of the hero to delete. </param>
     /// <returns> 
@@ -133,7 +136,10 @@ public class HeroController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
+        var jsonRepoService = httpClientFactory.CreateClient("JsonRepository");
         var sqlServerRepoService = httpClientFactory.CreateClient("SqlServerRepository");
+
+        await jsonRepoService.DeleteAsync(jsonRepoService.BaseAddress + $"/{id}");
         var response = await sqlServerRepoService.DeleteAsync(sqlServerRepoService.BaseAddress + $"/{id}");
 
         if (response.IsSuccessStatusCode)
